@@ -24,7 +24,7 @@ angular.module('myApp.visits', ['ngRoute', 'ngResource'])
 
 .factory('Visit', ['$resource',
     function($resource) {
-        return $resource('/namesandsongs/api/admin/visit/:id', {
+        return $resource('/api/s/admin/visit/:id', {
             id: '@id'
         }, {
             query: {
