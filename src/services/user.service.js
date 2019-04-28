@@ -1,4 +1,3 @@
-import config from 'config';
 import { authHeader } from '../helpers/auth-headers';
 
 export const userService = {
@@ -7,6 +6,8 @@ export const userService = {
     getAll
 };
 
+const apiUrl = 'http://localhost:4000'
+
 function login(username, password) {
     const requestOptions = {
         method: 'POST',
@@ -14,7 +15,7 @@ function login(username, password) {
         body: JSON.stringify({ username, password })
     };
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+    return fetch(`${apiUrl}/users/authenticate`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // login successful if there's a user in the response
@@ -40,7 +41,7 @@ function getAll() {
         headers: authHeader()
     };
 
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
+    return fetch(`${apiUrl}/users`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
