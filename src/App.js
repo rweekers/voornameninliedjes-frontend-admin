@@ -8,18 +8,12 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <div className="jumbotron">
-        <div className="container">
-          <div className="col-sm-8 col-sm-offset-2">
-            <Router>
-              <div>
-                  <PrivateRoute exact path="/" component={HomePage} />
-                  <Route path="/login" component={LoginPage} />
-              </div>
-            </Router>
-          </div>
+      <Router>
+        <div>
+          <PrivateRoute exact path="/" component={HomePage} />
+          <Route path="/login" component={LoginPage} />
         </div>
-      </div>
+      </Router>
     </div>
   );
 }

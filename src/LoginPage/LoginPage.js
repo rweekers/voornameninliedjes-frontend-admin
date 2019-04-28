@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './LoginPage.css';
 import { userService } from '../services/user.service';
 
 class LoginPage extends React.Component {
@@ -50,7 +50,7 @@ class LoginPage extends React.Component {
     render() {
         const { username, password, submitted, loading, error } = this.state;
         return (
-            <div className="col-md-6 col-md-offset-3">
+            <div className="LoginPage">
                 <div className="alert alert-info">
                     Username: test<br />
                     Password: test
