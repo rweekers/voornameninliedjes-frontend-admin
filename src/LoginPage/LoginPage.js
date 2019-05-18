@@ -1,6 +1,7 @@
 import React from 'react';
 import './LoginPage.css';
 import { userService } from '../services/user.service';
+import axios from 'axios';
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -20,7 +21,39 @@ class LoginPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(e) {
+    componentDidMount() {
+        var username = 'remco';
+        var password = 'secret';
+
+        // axios.get('https://dog.ceo/api/breeds/image/random')
+        axios.get('http://admin.voornameninliedjes.nl/songs/5c690e5a28152e9a319ea64a', {
+            auth: {
+                username: username,
+                password: password
+              }
+        })
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+        axios.post('http://admin.voornameninliedjes.nl/authenticate', 
+            {
+                "username": "remco",
+                "password": "secret"
+            }
+        )
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      }
+
+      handleChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
     }

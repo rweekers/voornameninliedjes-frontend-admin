@@ -1,4 +1,5 @@
 import { authHeader } from '../helpers/auth-headers';
+import axios from 'axios';
 
 export const userService = {
     login,
@@ -6,7 +7,8 @@ export const userService = {
     getAll
 };
 
-const apiUrl = 'http://localhost:4000'
+// const apiUrl = 'http://localhost:4000'
+const apiUrl = 'http://admin.voornameninliedjes.nl'
 
 function login(username, password) {
     const requestOptions = {
@@ -15,7 +17,7 @@ function login(username, password) {
         body: JSON.stringify({ username, password })
     };
 
-    return fetch(`${apiUrl}/users/authenticate`, requestOptions)
+    return fetch(`${apiUrl}/authenticate`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // login successful if there's a user in the response
@@ -50,11 +52,15 @@ function handleResponse(response) {
         if (!response.ok) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
+                console.log('Login failed, logging out now')
                 logout();
-                // location.reload(true);
+                window.location.reload(true);
             }
 
-            const error = (data && data.message) || response.statusText;
+            const error2 = (data && data.message) || response.statusText;
+            const error = response.statusText;
+            console.log('error ' + error);
+            console.log('response status ' + response.status);
             return Promise.reject(error);
         }
 
