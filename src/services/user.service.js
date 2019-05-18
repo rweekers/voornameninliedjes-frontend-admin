@@ -1,5 +1,4 @@
 import { authHeader } from '../helpers/auth-headers';
-import axios from 'axios';
 
 export const userService = {
     login,
