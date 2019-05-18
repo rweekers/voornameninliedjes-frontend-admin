@@ -7,7 +7,6 @@ export const userService = {
     getAll
 };
 
-// const apiUrl = 'http://localhost:4000'
 const apiUrl = 'http://admin.voornameninliedjes.nl'
 
 function login(username, password) {
@@ -52,15 +51,12 @@ function handleResponse(response) {
         if (!response.ok) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
-                console.log('Login failed, logging out now')
                 logout();
-                window.location.reload(true);
+                // window.location.reload(true);
             }
 
-            const error2 = (data && data.message) || response.statusText;
-            const error = response.statusText;
-            console.log('error ' + error);
-            console.log('response status ' + response.status);
+            // const error = (data && data.message) || response.statusText;
+            const error = response.status;
             return Promise.reject(error);
         }
 
