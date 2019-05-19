@@ -53,9 +53,7 @@ function handleResponse(response) {
                 logout();
                 // window.location.reload(true);
             }
-
-            // const error = (data && data.message) || response.statusText;
-            const error = response.status;
+            const error = `${response.status} ${data.message}`
             return Promise.reject(error);
         }
 
