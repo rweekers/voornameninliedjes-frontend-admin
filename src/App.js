@@ -8,7 +8,7 @@ import './App.css';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    // TODO check
+    // TODO check, use different way, this will share between different windows
     window.addEventListener('storage', function (e) {
       console.log('Woohoo, someone changed my localstorage va another tab/window!');
     });
