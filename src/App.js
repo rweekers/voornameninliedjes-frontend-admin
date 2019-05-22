@@ -8,12 +8,16 @@ import './App.css';
 class App extends React.Component {
   constructor(props) {
     super(props);
+
+    this.handleLogin = this.handleLogin.bind(this);
+
     // TODO check, use different way, this will share between different windows
     window.addEventListener('storage', function (e) {
       console.log('Woohoo, someone changed my localstorage va another tab/window!');
     });
     this.state = {
-      user: {}
+      user: {},
+      loggedIn: false
     };
   }
 
@@ -23,13 +27,18 @@ class App extends React.Component {
     });
   }
 
+  handleLogin() {
+    this.setState({ loggedIn: true })
+  }
+
   render() {
     const user = this.state.user;
+    const loggedIn = this.state.loggedIn;
     return (
       <div className="App">
         <Router>
           <div>
-            <nav hidden={user == null}>
+            <nav hidden={!loggedIn}>
               <ul>
                 <li>
                   <Link to="/">Users</Link>
@@ -42,13 +51,13 @@ class App extends React.Component {
                 </li>
               </ul>
             </nav>
-            {/* <div show={user}>
+            <div hidden={!loggedIn}>
               <h1>Hoi {user.username}!</h1>
-            </div> */}
+            </div>
             <PrivateRoute exact path="/about" component={About} />
             <PrivateRoute exact path="/songs" component={Songs} />
             <PrivateRoute exact path="/" component={HomePage} />
-            <Route path="/login" component={LoginPage} />
+            <Route path="/login" render={(props) => <LoginPage {...props} action={this.handleLogin} />} />
           </div>
         </Router>
       </div>
