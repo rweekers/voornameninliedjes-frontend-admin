@@ -23,8 +23,9 @@ class LoginPage extends React.Component {
 
     componentDidMount() {
         let c = this.context;
+        console.log(c.loggedIn);
+        c.loggedIn = false;
         console.log(c);
-        c.setUser(null);
     }
 
     handleChange(e) {
@@ -50,7 +51,7 @@ class LoginPage extends React.Component {
             .then(
                 user => {
                     const { from } = this.props.location.state || { from: { pathname: "/" } };
-                    c.setUser(user.username);
+                    c.loggedIn = true;
                     this.props.history.push(from);
                     this.props.action();
                 },

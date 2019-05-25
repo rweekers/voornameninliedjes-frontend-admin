@@ -12,10 +12,11 @@ class App extends React.Component {
 
     this.handleLogin = this.handleLogin.bind(this);
 
-    // TODO check, use different way, this will share between different windows
-    window.addEventListener('storage', function (e) {
-      console.log('Woohoo, someone changed my localstorage va another tab/window!');
-    });
+    this.setUser = (user) => {
+      this.setState(state => ({
+        loggedIn: state.loggedIn
+      }));
+    };
     this.state = {
       user: {},
       loggedIn: false
@@ -23,7 +24,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log(React.version);
+    console.log(this.state.loggedIn);
     this.setState({
       user: JSON.parse(localStorage.getItem('user'))
     });
@@ -35,41 +36,36 @@ class App extends React.Component {
 
   render() {
     const user = this.state.user;
-    const loggedIn = this.state.loggedIn;
-    let userTheme = this.context;
+    console.log(this.state.loggedIn + 'a');
     return (
       <div className="App">
-        <Router>
-          <div>
-            <nav hidden={!loggedIn}>
-              <ul>
-                <li>
-                  <Link to="/">Users</Link>
-                </li>
-                <li>
-                  <Link to="/songs/">Songs</Link>
-                </li>
-                <li>
-                  <Link to="/about/">About</Link>
-                </li>
-              </ul>
-            </nav>
-            <div hidden={!userTheme.user.username}>
-              <h1>Hoi {userTheme.user.username}!</h1>
-            </div>
+        <UserContext.Provider value={this.state}>
+          <Router>
             <div>
-              <UserContext.Consumer>
-                {({ user, setUser }) => (
-                  <p>{user.username}</p>
-                )}
-              </UserContext.Consumer>
+              <nav hidden={!this.state.loggedIn}>
+                <ul>
+                  <li>
+                    <Link to="/">Users</Link>
+                  </li>
+                  <li>
+                    <Link to="/songs/">Songs</Link>
+                  </li>
+                  <li>
+                    <Link to="/about/">About</Link>
+                  </li>
+                </ul>
+              </nav>
+              <div hidden={!this.state.loggedIn}>
+                {/* <h1>Hoi {user.username}!</h1> */}
+                <h1>Logged in {this.state.loggedIn + 'a'}</h1>
+              </div>
+              <PrivateRoute exact path="/about" component={About} />
+              <PrivateRoute exact path="/songs" component={Songs} />
+              <PrivateRoute exact path="/" component={HomePage} />
+              <Route path="/login" render={(props) => <LoginPage {...props} action={this.handleLogin} />} />
             </div>
-            <PrivateRoute exact path="/about" component={About} />
-            <PrivateRoute exact path="/songs" component={Songs} />
-            <PrivateRoute exact path="/" component={HomePage} />
-            <Route path="/login" render={(props) => <LoginPage {...props} action={this.handleLogin} />} />
-          </div>
-        </Router>
+          </Router>
+        </UserContext.Provider>
       </div>
     );
   }
