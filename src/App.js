@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { PrivateRoute } from './components/PrivateRoute';
 import { LoginPage } from './LoginPage/LoginPage';
 import { HomePage } from './HomePage/HomePage';
+import { UserContext } from './user-context';
 import './App.css';
 
 class App extends React.Component {
@@ -22,6 +23,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log(React.version);
     this.setState({
       user: JSON.parse(localStorage.getItem('user'))
     });
@@ -34,6 +36,7 @@ class App extends React.Component {
   render() {
     const user = this.state.user;
     const loggedIn = this.state.loggedIn;
+    let userTheme = this.context;
     return (
       <div className="App">
         <Router>
@@ -52,7 +55,19 @@ class App extends React.Component {
               </ul>
             </nav>
             <div hidden={!loggedIn}>
-              <h1>Hoi {user.username}!</h1>
+              <h1>Hoi {userTheme.user.username}!</h1>
+            </div>
+            <div>
+              <UserContext.Consumer>
+                {({ user, setUser }) => (
+                  <div>
+                    <button
+                      onClick={setUser}>
+                      Toggle Theme</button>
+                    <p>{user.username}</p>
+                  </div>
+                )}
+              </UserContext.Consumer>
             </div>
             <PrivateRoute exact path="/about" component={About} />
             <PrivateRoute exact path="/songs" component={Songs} />
@@ -72,5 +87,7 @@ function Songs() {
 function About() {
   return <h2>About</h2>;
 }
+
+App.contextType = UserContext;
 
 export default App;
