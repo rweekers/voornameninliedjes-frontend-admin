@@ -1,6 +1,7 @@
 import React from 'react';
 import './LoginPage.css';
 import { userService } from '../services/user.service';
+import { UserContext } from '../user-context';
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -20,6 +21,12 @@ class LoginPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidMount() {
+        let c = this.context;
+        console.log(c);
+        c.setUser(null);
+    }
+
     handleChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
@@ -27,6 +34,8 @@ class LoginPage extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
+
+        let c = this.context;
 
         this.setState({ submitted: true });
         const { username, password, returnUrl } = this.state;
@@ -41,6 +50,7 @@ class LoginPage extends React.Component {
             .then(
                 user => {
                     const { from } = this.props.location.state || { from: { pathname: "/" } };
+                    c.setUser(user.username);
                     this.props.history.push(from);
                     this.props.action();
                 },
@@ -82,5 +92,7 @@ class LoginPage extends React.Component {
         );
     }
 }
+
+LoginPage.contextType = UserContext;
 
 export { LoginPage }; 

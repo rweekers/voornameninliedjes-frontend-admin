@@ -54,18 +54,13 @@ class App extends React.Component {
                 </li>
               </ul>
             </nav>
-            <div hidden={!loggedIn}>
+            <div hidden={!userTheme.user.username}>
               <h1>Hoi {userTheme.user.username}!</h1>
             </div>
             <div>
               <UserContext.Consumer>
                 {({ user, setUser }) => (
-                  <div>
-                    <button
-                      onClick={setUser}>
-                      Toggle Theme</button>
-                    <p>{user.username}</p>
-                  </div>
+                  <p>{user.username}</p>
                 )}
               </UserContext.Consumer>
             </div>

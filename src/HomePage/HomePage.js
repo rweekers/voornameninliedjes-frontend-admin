@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PrivateRoute } from '../components/PrivateRoute';
-
 import { userService } from '../services/user.service';
 
 class HomePage extends React.Component {
