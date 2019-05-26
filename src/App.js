@@ -12,19 +12,34 @@ class App extends React.Component {
 
     this.handleLogin = this.handleLogin.bind(this);
 
-    this.setUser = (user) => {
+    this.logout = () => {
       this.setState(state => ({
-        loggedIn: state.loggedIn
+        loggedIn: false
       }));
     };
+
+    this.login = () => {
+      this.setState(state => ({
+        loggedIn: true
+      }));
+    };
+
+    this.setUser = (newUser) => {
+      this.setState(state => ({
+        user: newUser
+      }));
+    }
+
     this.state = {
       user: {},
-      loggedIn: false
+      loggedIn: false,
+      logout: this.logout,
+      login: this.login,
+      setUser: this.setUser
     };
   }
 
   componentDidMount() {
-    console.log(this.state.loggedIn);
     this.setState({
       user: JSON.parse(localStorage.getItem('user'))
     });
@@ -36,7 +51,7 @@ class App extends React.Component {
 
   render() {
     const user = this.state.user;
-    console.log(this.state.loggedIn + 'a');
+    const loggedIn = this.state.loggedIn;
     return (
       <div className="App">
         <UserContext.Provider value={this.state}>
@@ -56,8 +71,8 @@ class App extends React.Component {
                 </ul>
               </nav>
               <div hidden={!this.state.loggedIn}>
-                {/* <h1>Hoi {user.username}!</h1> */}
-                <h1>Logged in {this.state.loggedIn + 'a'}</h1>
+                {loggedIn && user !== null && <h1>Hoi {user.username}!</h1>}
+                {/* <h1>Logged in {this.state.loggedIn + 'a'}</h1> */}
               </div>
               <PrivateRoute exact path="/about" component={About} />
               <PrivateRoute exact path="/songs" component={Songs} />
