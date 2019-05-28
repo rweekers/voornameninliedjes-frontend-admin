@@ -5,7 +5,34 @@
 
 html {
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: 62.5%; /* font-size 1em = 10px on default browser settings */ 
+  font-size: 62.5%;
+  /* font-size 1em = 10px on default browser settings */
+}
+
+nav {
+  width: 100vw;
+  background-color: #D6EFFF;
+}
+
+nav ul {
+  display: flex;
+}
+
+nav li {
+  list-style-type: none;
+  margin: 0 2vw;
+  font-size: 3vh;
+}
+
+nav a {
+  text-decoration: none;
+  color: black;
+  padding: 2vw;
+  font-family: monospace;
+}
+
+nav a:hover {
+  background-color: #C6E9FF;
 }
 
 .App {
