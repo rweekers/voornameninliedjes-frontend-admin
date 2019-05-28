@@ -40,8 +40,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    const user = JSON.parse(localStorage.getItem('user'))
+    const loggedIn = user !== null
+    
+
     this.setState({
-      user: JSON.parse(localStorage.getItem('user'))
+      user: user,
+      loggedIn: loggedIn
     });
   }
 
@@ -59,6 +64,7 @@ class App extends React.Component {
             <div>
               <nav hidden={!this.state.loggedIn}>
                 <ul>
+                  <button> 🞬 </button>
                   <li>
                     <Link to="/">Users</Link>
                   </li>
