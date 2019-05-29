@@ -35,19 +35,27 @@ class App extends React.Component {
       loggedIn: false,
       logout: this.logout,
       login: this.login,
-      setUser: this.setUser
+      setUser: this.setUser,
+      text: '☰'
     };
   }
 
   componentDidMount() {
     const user = JSON.parse(localStorage.getItem('user'))
     const loggedIn = user !== null
-    
 
     this.setState({
       user: user,
       loggedIn: loggedIn
     });
+  }
+
+  changeText = () => {
+    if (this.state.text === '☰') {
+      this.setState({ text: 'x' });
+    } else {
+      this.setState({ text: '☰' });
+    }
   }
 
   handleLogin() {
@@ -57,6 +65,8 @@ class App extends React.Component {
   render() {
     const user = this.state.user;
     const loggedIn = this.state.loggedIn;
+    const text = this.state.text;
+
     return (
       <div className="App">
         <UserContext.Provider value={this.state}>
@@ -64,21 +74,20 @@ class App extends React.Component {
             <div>
               <nav hidden={!this.state.loggedIn}>
                 <ul>
-                  <button> 🞬 </button>
-                  <li>
+                  <button onClick={() => { this.changeText() }}>{text}</button>
+                  <li hidden={text === '☰'}>
                     <Link to="/">Users</Link>
                   </li>
-                  <li>
+                  <li hidden={text === '☰'}>
                     <Link to="/songs/">Songs</Link>
                   </li>
-                  <li>
+                  <li hidden={text === '☰'}>
                     <Link to="/about/">About</Link>
                   </li>
                 </ul>
               </nav>
               <div hidden={!this.state.loggedIn}>
                 {loggedIn && user !== null && <h1>Hoi {user.username}!</h1>}
-                {/* <h1>Logged in {this.state.loggedIn + 'a'}</h1> */}
               </div>
               <PrivateRoute exact path="/about" component={About} />
               <PrivateRoute exact path="/songs" component={Songs} />
