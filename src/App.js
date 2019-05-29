@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { PrivateRoute } from './components/PrivateRoute';
 import { LoginPage } from './LoginPage/LoginPage';
 import { HomePage } from './HomePage/HomePage';
+import { SongsPage } from './SongsPage/SongsPage';
+import { About } from './About/About';
 import { UserContext } from './user-context';
 import './App.css';
 
@@ -90,7 +92,7 @@ class App extends React.Component {
                 {loggedIn && user !== null && <h1>Hoi {user.username}!</h1>}
               </div>
               <PrivateRoute exact path="/about" component={About} />
-              <PrivateRoute exact path="/songs" component={Songs} />
+              <PrivateRoute exact path="/songs" component={SongsPage} />
               <PrivateRoute exact path="/" component={HomePage} />
               <Route path="/login" render={(props) => <LoginPage {...props} action={this.handleLogin} />} />
             </div>
@@ -99,14 +101,6 @@ class App extends React.Component {
       </div>
     );
   }
-}
-
-function Songs() {
-  return <h2>Songs</h2>;
-}
-
-function About() {
-  return <h2>About</h2>;
 }
 
 App.contextType = UserContext;
