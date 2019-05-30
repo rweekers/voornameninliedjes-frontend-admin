@@ -1,4 +1,5 @@
 import React from 'react';
+import { songService } from '../services/song.service';
 
 class SongsPage extends React.Component {
     constructor(props) {
@@ -10,16 +11,23 @@ class SongsPage extends React.Component {
     }
 
     componentDidMount() {
-        // this.setState({
-        //     user: JSON.parse(localStorage.getItem('user')),
-        //     users: { loading: true }
-        // });
+        songService.getDone().then(songs => this.setState({ songs }));
     }
 
     render() {
+        const { songs } = this.state;
         return (
             <div>
                 <h3>Songs</h3>
+                {songs.length &&
+                    <ul>
+                        {songs.filter(song => song.status === 'SHOW').map((song, index) =>
+                            <li key={song.id}>
+                                {song.artist} - {song.title} [{song.status}]
+                            </li>
+                        )}
+                    </ul>
+                }
             </div>
         );
     }
