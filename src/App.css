@@ -48,6 +48,11 @@ nav button {
   nav li {
     margin: 0;
   }
+
+  .menuLink-hidden {
+    display: none;
+  }
+
   /* makes sure that the a tag will take the entire screen*/
   nav a {
     display: block;

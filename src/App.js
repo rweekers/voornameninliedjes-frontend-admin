@@ -67,9 +67,7 @@ class App extends React.Component {
   render() {
     const user = this.state.user;
     const loggedIn = this.state.loggedIn;
-    const text = this.state.text;
-
-    const mq = window.matchMedia( "(max-width: 500px)" );
+    const { text } = this.state;
 
     return (
       <div className="App">
@@ -79,13 +77,13 @@ class App extends React.Component {
               <nav hidden={!this.state.loggedIn}>
                 <ul>
                   <button onClick={() => { this.changeText() }}>{text}</button>
-                  <li hidden={mq.matches && text === '☰'}>
+                  <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
                     <Link to="/">Users</Link>
                   </li>
-                  <li hidden={mq.matches && text === '☰'}>
+                  <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
                     <Link to="/songs/">Songs</Link>
                   </li>
-                  <li hidden={mq.matches && text === '☰'}>
+                  <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
                     <Link to="/about/">About</Link>
                   </li>
                 </ul>
