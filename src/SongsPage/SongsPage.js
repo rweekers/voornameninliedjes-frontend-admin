@@ -1,5 +1,7 @@
 import React from 'react';
 import { songService } from '../services/song.service';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { PrivateRoute } from '../components/PrivateRoute';
 
 class SongsPage extends React.Component {
     constructor(props) {
@@ -23,7 +25,8 @@ class SongsPage extends React.Component {
                     <ul>
                         {songs.filter(song => song.status === 'SHOW').map((song, index) =>
                             <li key={song.id}>
-                                {song.artist} - {song.title} [{song.status}]
+                                <PrivateRoute exact path="/songs/:id" component={Songdetail} />
+                                <Link to={'/songs/' + song.id}>{song.artist} - {song.title} [{song.status}]</Link>
                             </li>
                         )}
                     </ul>
@@ -31,6 +34,10 @@ class SongsPage extends React.Component {
             </div>
         );
     }
+}
+
+function Songdetail() {
+    return <h2>Song detail</h2>;
 }
 
 export { SongsPage };
