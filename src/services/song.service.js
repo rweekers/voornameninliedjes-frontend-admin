@@ -3,7 +3,8 @@ import { authHeader } from '../helpers/auth-headers';
 export const songService = {
     getAll,
     getDone,
-    getToDo
+    getToDo,
+    getSong
 };
 
 const apiUrl = 'http://admin.voornameninliedjes.nl'
@@ -23,6 +24,15 @@ function getDone() {
 
 function getToDo() {
     return getAll();
+}
+
+function getSong(id) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${apiUrl}/songs/${id}`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {

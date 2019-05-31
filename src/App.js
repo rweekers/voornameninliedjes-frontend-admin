@@ -4,6 +4,7 @@ import { PrivateRoute } from './components/PrivateRoute';
 import { LoginPage } from './LoginPage/LoginPage';
 import { HomePage } from './HomePage/HomePage';
 import { SongsPage } from './SongsPage/SongsPage';
+import { SongDetail } from './SongDetail/SongDetail';
 import { About } from './About/About';
 import { UserContext } from './user-context';
 import './App.css';
@@ -94,6 +95,7 @@ class App extends React.Component {
               <PrivateRoute exact path="/about" component={About} />
               <PrivateRoute exact path="/songs" component={SongsPage} />
               <PrivateRoute exact path="/" component={HomePage} />
+              <PrivateRoute exact path="/songs/:id" component={SongDetail} />
               <Route path="/login" render={(props) => <LoginPage {...props} action={this.handleLogin} />} />
             </div>
           </Router>
