@@ -6,7 +6,7 @@ class SongDetail extends React.Component {
         super(props);
 
         this.state = {
-            song: { artist: 'loading', title: 'loading', name: 'loading', background: 'loading' },
+            song: { artist: 'loading', title: 'loading', name: 'loading', background: 'loading', flickrPhotos: [] },
             user: {}
         };
 
@@ -16,6 +16,7 @@ class SongDetail extends React.Component {
 
     handleChange(event) {
         const { name, value } = event.target;
+        console.log(name + ' ' + value);
         this.setState({ song: { ...this.state.song, [name]: value } })
     }
 
@@ -50,6 +51,12 @@ class SongDetail extends React.Component {
                     <label>
                         Background: <textarea name="background" value={this.state.song.background} onChange={this.handleChange} />
                     </label><br />
+                    {song.flickrPhotos.map((item, index) => (
+                        <label key={index}>
+                            Flickr photo {index + 1}: <input type="text" name={`flickrPhotos[${index}]`} value={item} onChange={this.handleChange} />
+                        </label>
+                    ))}
+                    <br />
                     <input type="submit" value="Submit" />
                 </form>
             </div>
