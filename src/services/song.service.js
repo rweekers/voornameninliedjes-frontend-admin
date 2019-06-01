@@ -4,7 +4,8 @@ export const songService = {
     getAll,
     getDone,
     getToDo,
-    getSong
+    getSong,
+    updateSong
 };
 
 const apiUrl = 'http://admin.voornameninliedjes.nl'
@@ -33,6 +34,17 @@ function getSong(id) {
     };
 
     return fetch(`${apiUrl}/songs/${id}`, requestOptions).then(handleResponse);
+}
+
+function updateSong(song, user) {
+    const requestOptions = {
+        method: 'PUT',
+        body: JSON.stringify(song),
+        headers: authHeader()
+    };
+    const id = song.id;
+    const username = user.username;
+    return fetch(`${apiUrl}/songs/${username}/${id}`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
