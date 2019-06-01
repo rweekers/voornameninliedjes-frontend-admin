@@ -1,5 +1,4 @@
 import React from 'react';
-import update from 'immutability-helper';
 import { songService } from '../services/song.service';
 
 class SongDetail extends React.Component {
@@ -7,7 +6,7 @@ class SongDetail extends React.Component {
         super(props);
 
         this.state = {
-            song: {},
+            song: { artist: 'loading', title: 'loading', name: 'loading', background: 'loading' },
             user: {}
         };
 
@@ -17,14 +16,7 @@ class SongDetail extends React.Component {
 
     handleChange(event) {
         const { name, value } = event.target;
-
-        const newData = update(this.state.song, {
-            [name]: { $set: value }
-        });
-
-        this.setState(() => ({
-            song: newData
-        }))
+        this.setState({ song: { ...this.state.song, [name]: value } })
     }
 
     handleSubmit(event) {
