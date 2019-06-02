@@ -11,13 +11,22 @@ class SongDetail extends React.Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleArrayChange = this.handleArrayChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(event) {
         const { name, value } = event.target;
-        console.log(name + ' ' + value);
         this.setState({ song: { ...this.state.song, [name]: value } })
+    }
+
+    handleArrayChange(event, index) {
+        const { name, value } = event.target;
+        const flickrPhotos = [...this.state.song.flickrPhotos];
+        flickrPhotos[index] = value;
+        this.setState({
+            song: { ...this.state.song, [name]: flickrPhotos } 
+          });
     }
 
     handleSubmit(event) {
@@ -51,9 +60,15 @@ class SongDetail extends React.Component {
                     <label>
                         Background: <textarea name="background" value={this.state.song.background} onChange={this.handleChange} />
                     </label><br />
+                    <label>
+                        YouTube: <textarea name="youtube" value={this.state.song.youtube} onChange={this.handleChange} />
+                    </label><br />
+                    <label>
+                        Spotify: <textarea name="spotify" value={this.state.song.spotify} onChange={this.handleChange} />
+                    </label><br />
                     {song.flickrPhotos.map((item, index) => (
                         <label key={index}>
-                            Flickr photo {index + 1}: <input type="text" name={`flickrPhotos[${index}]`} value={item} onChange={this.handleChange} />
+                            Flickr photo {index + 1}: <input type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
                         </label>
                     ))}
                     <br />

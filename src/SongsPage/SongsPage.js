@@ -20,7 +20,7 @@ class SongsPage extends React.Component {
         return (
             <div>
                 <h3>Songs</h3>
-                {songs.length &&
+                {songs.length > 0 &&
                     <ul>
                         {songs.filter(song => song.status === 'SHOW').map((song, index) =>
                             <li key={song.id}>
