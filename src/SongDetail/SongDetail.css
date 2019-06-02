@@ -1,0 +1,17 @@
+legend {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+fieldset {
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+label {
+    display: inline-block;
+    width: 140px;
+    text-align: right;
+}
