@@ -25,8 +25,8 @@ class SongDetail extends React.Component {
         const flickrPhotos = [...this.state.song.flickrPhotos];
         flickrPhotos[index] = value;
         this.setState({
-            song: { ...this.state.song, [name]: flickrPhotos } 
-          });
+            song: { ...this.state.song, [name]: flickrPhotos }
+        });
     }
 
     handleSubmit(event) {
@@ -66,6 +66,13 @@ class SongDetail extends React.Component {
                     <label>
                         Spotify: <textarea name="spotify" value={this.state.song.spotify} onChange={this.handleChange} />
                     </label><br />
+                    <label>
+                        Status: <select name="status" value={this.state.song.status} onChange={this.handleChange}>
+                            <option value="SHOW">Tonen</option>
+                            <option value="IN_PROGRESS">Aan het bewerken</option>
+                            <option selected value="TO_BE_DELETED">Verwijderd</option>
+                        </select>
+                    </label><br />
                     {song.flickrPhotos.map((item, index) => (
                         <label key={index}>
                             Flickr photo {index + 1}: <input type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
@@ -74,7 +81,7 @@ class SongDetail extends React.Component {
                     <br />
                     <input type="submit" value="Submit" />
                 </form>
-            </div>
+            </div >
         );
     }
 }
