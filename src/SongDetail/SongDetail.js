@@ -50,32 +50,32 @@ class SongDetail extends React.Component {
                 <h2>{song.artist} - {song.title}</h2>
                 <form onSubmit={this.handleSubmit}>
                     <fieldset>
-                        <legend>Hi!</legend>
-                        <div>
-                            <label>Artist:</label>
+                        <legend>Details</legend>
+                        <div class="line">
+                            <label>Artiest:</label>
                             <input type="text" name="artist" value={this.state.song.artist} onChange={this.handleChange} />
                         </div>
-                        <div>
-                            <label>Name:</label>
+                        <div class="line">
+                            <label>Naam:</label>
                             <input type="text" name="name" value={this.state.song.name} onChange={this.handleChange} />
                         </div>
-                        <div>
+                        <div class="line">
                             <label>Title:</label>
                             <input type="text" name="title" value={this.state.song.title} onChange={this.handleChange} />
                         </div>
-                        <div>
-                            <label>Background:</label>
+                        <div class="line">
+                            <label>Achtergrond:</label>
                             <textarea name="background" value={this.state.song.background} onChange={this.handleChange} />
                         </div>
-                        <div>
+                        <div class="line">
                             <label>YouTube:</label>
-                            <textarea name="youtube" value={this.state.song.youtube} onChange={this.handleChange} />
+                            <input type="text" name="youtube" value={this.state.song.youtube} onChange={this.handleChange} />
                         </div>
-                        <div>
+                        <div class="line">
                             <label>Spotify:</label>
-                            <textarea name="spotify" value={this.state.song.spotify} onChange={this.handleChange} />
+                            <input type="text" name="spotify" value={this.state.song.spotify} onChange={this.handleChange} />
                         </div>
-                        <div>
+                        <div class="line">
                             <label>Status:</label>
                             <select name="status" value={this.state.song.status} onChange={this.handleChange}>
                                 <option value="SHOW">Tonen</option>
@@ -83,15 +83,23 @@ class SongDetail extends React.Component {
                                 <option selected value="TO_BE_DELETED">Verwijderd</option>
                             </select>
                         </div>
-                        {song.flickrPhotos.map((item, index) => (
-                            <div>
-                                <label key={index}>Flickr photo {index + 1}:</label>
-                                <input type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
-                            </div>
-                        ))}
-                        <br />
-                        <input type="submit" value="Submit" />
+                        <div class="line">
+                            {song.flickrPhotos.map((item, index) => (
+                                <div>
+                                    <label key={index}>Flickr foto {index + 1}:</label>
+                                    <input type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
+                                </div>
+                            ))}
+                        </div>
                     </fieldset>
+                    <fieldset>
+                        <legend>Achtergrond en media</legend>
+                        <div class="line">
+                            <label>Achtergrond:</label>
+                            <textarea name="background" value={this.state.song.background} onChange={this.handleChange} />
+                        </div>
+                    </fieldset>
+                    <input type="submit" value="Opslaan" />
                 </form>
             </div >
         );

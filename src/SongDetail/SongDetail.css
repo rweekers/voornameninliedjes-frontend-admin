@@ -1,17 +1,59 @@
-legend {
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
+form {
+    margin:10px 10px;
 }
 
 fieldset {
     width: 500px;
     margin-left: auto;
     margin-right: auto;
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
+
+fieldset, input {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 label {
-    display: inline-block;
-    width: 140px;
+    float: left;
+    font-size: 13px;
+    line-height: 18px;
+    padding-top: 6px;
     text-align: right;
+    width: 130px;
+}
+
+label, input, select, textarea {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: normal;
+}
+
+input, textarea, select {
+    display: inline-block;
+    font-size: 13px;
+    height: 18px;
+    line-height: 18px;
+    padding: 4px;
+    width: 210px;
+}
+
+select {
+    width: 222px;
+}
+
+select {
+    height: 27px;
+    line-height: 27px;
+}
+
+form .input {
+    margin-left: 150px;
+}
+
+form .line {
+    margin-bottom: 18px;
 }
