@@ -89,8 +89,8 @@ class App extends React.Component {
                   </li>
                 </ul>
               </nav>
-              <div hidden={!this.state.loggedIn}>
-                {loggedIn && user !== null && <h1>Hoi {user.username}!</h1>}
+              <div className="login" hidden={!this.state.loggedIn}>
+                {loggedIn && user !== null && <div><p>Ingelogd als {user.username}</p><Link to="/login">Logout</Link></div>}
               </div>
               <PrivateRoute exact path="/about" component={About} />
               <PrivateRoute exact path="/songs" component={SongsPage} />

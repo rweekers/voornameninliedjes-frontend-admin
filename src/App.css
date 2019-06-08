@@ -91,3 +91,8 @@ nav button {
 .App-link {
   color: #61dafb;
 }
+
+.login p {
+  text-align: right;
+  padding: 0 1% 0 0;
+}
