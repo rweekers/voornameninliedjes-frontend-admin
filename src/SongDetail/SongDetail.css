@@ -68,31 +68,26 @@ h1 {
 }
 
 fieldset {
-  width: 500px;
   margin-left: auto;
   margin-right: auto;
   padding-top: 10px;
   margin-bottom: 10px;
 }
 
-fieldset, input {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
 label {
   float: left;
-  font-size: 13px;
-  line-height: 18px;
-  padding-top: 6px;
   text-align: right;
   width: 130px;
 }
 
+legend {
+  font-family : inherit;
+  font-size   : 100%;
+}
+
 label, input, select, textarea {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-family : inherit;
+  font-size   : 100%;
   font-weight: normal;
   line-height: normal;
 }
@@ -120,5 +115,7 @@ form .input {
 }
 
 form .line {
-  margin-bottom: 18px;
+  height: 50px;
+  display: flex;
+  align-items: center
 }

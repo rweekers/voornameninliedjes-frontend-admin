@@ -1,6 +1,12 @@
 import React from 'react';
 import { songService } from '../services/song.service';
+import axios from "axios";
 import './SongDetail.css';
+
+const API = 'https://api.voornameninliedjes.nl/songs/';
+const FLICKR_PHOTO_DETAIL = 'https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true&photo_id=';
+const FLICKR_USER_DETAIL = 'https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true&user_id=';
+const FLICKR_LICENCES = 'https://api.flickr.com/services/rest/?method=flickr.photos.licenses.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true'
 
 class SongDetail extends React.Component {
     constructor(props) {
@@ -8,7 +14,9 @@ class SongDetail extends React.Component {
 
         this.state = {
             song: { artist: 'loading', title: 'loading', name: 'loading', spotify: 'loading', youtube: 'loading', background: 'loading', flickrPhotos: [] },
-            user: {}
+            user: {},
+            photo: '',
+            contribution: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -41,10 +49,45 @@ class SongDetail extends React.Component {
         });
         const songId = this.props.match.params.id;
         songService.getSong(songId).then(song => this.setState({ song }));
+
+        axios.get(API + songId)
+            .then(res => {
+                const song = res.data;
+                axios.get(FLICKR_PHOTO_DETAIL + song.flickrPhotos[0])
+                    .then(res => {
+                        const photo = res.data.photo;
+                        axios.get(FLICKR_USER_DETAIL + photo.owner.nsid)
+                            .then(res => {
+                                const owner = res.data.person;
+                                axios.get(FLICKR_LICENCES)
+                                    .then(res => {
+                                        const licenses = res.data.licenses.license;
+                                        const license = licenses.find(x => x.id === photo.license);
+                                        const licenseName = license.name;
+                                        const licenseUrl = license.url;
+                                        const contribution = {
+                                            'ownerName': owner.username._content,
+                                            'ownerUrl': owner.photosurl._content,
+                                            'photoTitle': photo.title._content,
+                                            'photoUrl': photo.urls.url[0]._content,
+                                            'licenseName': licenseName,
+                                            'licenseUrl': licenseUrl
+                                        };
+                                        this.setState({
+                                            photo: photo,
+                                            owner: owner,
+                                            contribution: contribution
+                                        });
+                                    })
+                            })
+                    })
+            });
     }
 
     render() {
         const song = this.state.song;
+        const photo = this.state.photo;
+        const contribution = this.state.contribution;
         return (
             <div className="Songdetail">
                 <form onSubmit={this.handleSubmit}>
@@ -66,10 +109,6 @@ class SongDetail extends React.Component {
                                     <input type="text" name="title" value={this.state.song.title} onChange={this.handleChange} />
                                 </div>
                                 <div className="line">
-                                    <label>Achtergrond:</label>
-                                    <textarea name="background" value={this.state.song.background} onChange={this.handleChange} />
-                                </div>
-                                <div className="line">
                                     <label>YouTube:</label>
                                     <input type="text" name="youtube" value={this.state.song.youtube} onChange={this.handleChange} />
                                 </div>
@@ -86,11 +125,9 @@ class SongDetail extends React.Component {
                                     </select>
                                 </div>
                                 <div className="line">
+                                    <label>Flickr foto:</label>
                                     {song.flickrPhotos.map((item, index) => (
-                                        <div key={`div-$index`}>
-                                            <label key={`label-$index`}>Flickr foto {index + 1}:</label>
-                                            <input key={`input-$index`} type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
-                                        </div>
+                                        <input key={index} type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
                                     ))}
                                 </div>
                             </fieldset>
@@ -98,9 +135,25 @@ class SongDetail extends React.Component {
                         <content className="song-metadata">
                             <fieldset>
                                 <legend>Achtergrond en media</legend>
-                                <div className="line">
+                                <div>
                                     <label>Achtergrond:</label>
                                     <textarea name="background" value={this.state.song.background} onChange={this.handleChange} />
+                                </div>
+                                <div>
+                                    <label>YouTube:</label>
+                                    <iframe src={`https://www.youtube.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
+                                </div>
+                                <div>
+                                    <label>Spotify:</label>
+                                    <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                </div>
+                                <div>
+                                    <label>Flickr photo:</label>
+                                    <img
+                                        src={`https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_c.jpg`}
+                                        alt={photo.title}
+                                    />
+                                    <div className="attribution"><a href={contribution.photoUrl} target="_blank" rel="noopener noreferrer">Photo</a> by <a href={contribution.ownerUrl} target="_blank" rel="noopener noreferrer">{contribution.ownerName}</a> / <a href={contribution.licenseUrl} target="_blank" rel="noopener noreferrer">{contribution.licenseName}</a></div>
                                 </div>
                             </fieldset>
                         </content>
