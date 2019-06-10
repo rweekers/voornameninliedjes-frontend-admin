@@ -18,11 +18,13 @@ class SongDetail extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // TODO make sure it does not fire always (debounceTime?)
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({ song: { ...this.state.song, [name]: value } })
     }
 
+    // TODO make sure it does not fire always (debounceTime?)
     handleArrayChange(event, index) {
         const { name, value } = event.target;
         const flickrPhotos = [...this.state.song.flickrPhotos];
@@ -30,13 +32,14 @@ class SongDetail extends React.Component {
         this.setState({
             song: { ...this.state.song, [name]: flickrPhotos }
         });
-        console.log(flickrPhotos[0]);
         songService.getFlickrPhotoInfo(flickrPhotos[0]).then(photo => {
-            console.log(photo);
-            // this.setState({
-            //     photo: photo,
-            //     contribution: photo.contribution
-            // });
+            this.setState({
+                photo: photo,
+                contribution: photo.contribution
+            });
+        }).catch(function (error) {
+            // TODO write code to show image not correct
+            console.log(error);
         });
     }
 

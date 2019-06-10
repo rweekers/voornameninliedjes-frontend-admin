@@ -1,6 +1,5 @@
 import { authHeader } from '../helpers/auth-headers';
 import axios from "axios";
-import { constants } from 'http2';
 
 export const songService = {
     getAll,
@@ -69,11 +68,9 @@ function getFlickrPhotoInfo(flickrId) {
                             return Promise.reject(error);
                         });
                 }).catch(function (error) {
-                    console.log(error);
                     return Promise.reject(error);
                 });
         }).catch(function (error) {
-            console.log(error);
             return Promise.reject(error);
         });
 }
