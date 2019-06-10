@@ -1,12 +1,6 @@
 import React from 'react';
 import { songService } from '../services/song.service';
-import axios from "axios";
 import './SongDetail.css';
-
-const API = 'https://api.voornameninliedjes.nl/songs/';
-const FLICKR_PHOTO_DETAIL = 'https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true&photo_id=';
-const FLICKR_USER_DETAIL = 'https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true&user_id=';
-const FLICKR_LICENCES = 'https://api.flickr.com/services/rest/?method=flickr.photos.licenses.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true'
 
 class SongDetail extends React.Component {
     constructor(props) {
@@ -36,6 +30,14 @@ class SongDetail extends React.Component {
         this.setState({
             song: { ...this.state.song, [name]: flickrPhotos }
         });
+        console.log(flickrPhotos[0]);
+        songService.getFlickrPhotoInfo(flickrPhotos[0]).then(photo => {
+            console.log(photo);
+            // this.setState({
+            //     photo: photo,
+            //     contribution: photo.contribution
+            // });
+        });
     }
 
     handleSubmit(event) {
@@ -48,40 +50,15 @@ class SongDetail extends React.Component {
             user: JSON.parse(localStorage.getItem('user')),
         });
         const songId = this.props.match.params.id;
-        songService.getSong(songId).then(song => this.setState({ song }));
-
-        axios.get(API + songId)
-            .then(res => {
-                const song = res.data;
-                axios.get(FLICKR_PHOTO_DETAIL + song.flickrPhotos[0])
-                    .then(res => {
-                        const photo = res.data.photo;
-                        axios.get(FLICKR_USER_DETAIL + photo.owner.nsid)
-                            .then(res => {
-                                const owner = res.data.person;
-                                axios.get(FLICKR_LICENCES)
-                                    .then(res => {
-                                        const licenses = res.data.licenses.license;
-                                        const license = licenses.find(x => x.id === photo.license);
-                                        const licenseName = license.name;
-                                        const licenseUrl = license.url;
-                                        const contribution = {
-                                            'ownerName': owner.username._content,
-                                            'ownerUrl': owner.photosurl._content,
-                                            'photoTitle': photo.title._content,
-                                            'photoUrl': photo.urls.url[0]._content,
-                                            'licenseName': licenseName,
-                                            'licenseUrl': licenseUrl
-                                        };
-                                        this.setState({
-                                            photo: photo,
-                                            owner: owner,
-                                            contribution: contribution
-                                        });
-                                    })
-                            })
-                    })
+        songService.getSong(songId).then(song => {
+            this.setState({ song });
+            songService.getFlickrPhotoInfo(song.flickrPhotos[0]).then(photo => {
+                this.setState({
+                    photo: photo,
+                    contribution: photo.contribution
+                });
             });
+        });
     }
 
     render() {

@@ -1,14 +1,20 @@
 import { authHeader } from '../helpers/auth-headers';
+import axios from "axios";
+import { constants } from 'http2';
 
 export const songService = {
     getAll,
     getDone,
     getToDo,
     getSong,
-    updateSong
+    updateSong,
+    getFlickrPhotoInfo
 };
 
 const apiUrl = 'http://admin.voornameninliedjes.nl'
+const FLICKR_PHOTO_DETAIL = 'https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true&photo_id=';
+const FLICKR_USER_DETAIL = 'https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true&user_id=';
+const FLICKR_LICENCES = 'https://api.flickr.com/services/rest/?method=flickr.photos.licenses.getInfo&api_key=9676a28e9cb321d2721e813055abb6dc&format=json&nojsoncallback=true'
 
 function getAll() {
     const requestOptions = {
@@ -34,6 +40,42 @@ function getSong(id) {
     };
 
     return fetch(`${apiUrl}/songs/${id}`, requestOptions).then(handleResponse);
+}
+
+function getFlickrPhotoInfo(flickrId) {
+    return axios.get(FLICKR_PHOTO_DETAIL + flickrId)
+        .then(res => {
+            const photo = res.data.photo;
+            return axios.get(FLICKR_USER_DETAIL + photo.owner.nsid)
+                .then(res => {
+                    const owner = res.data.person;
+                    return axios.get(FLICKR_LICENCES)
+                        .then(res => {
+                            const licenses = res.data.licenses.license;
+                            const license = licenses.find(x => x.id === photo.license);
+                            const licenseName = license.name;
+                            const licenseUrl = license.url;
+                            const contribution = {
+                                'ownerName': owner.username._content,
+                                'ownerUrl': owner.photosurl._content,
+                                'photoTitle': photo.title._content,
+                                'photoUrl': photo.urls.url[0]._content,
+                                'licenseName': licenseName,
+                                'licenseUrl': licenseUrl
+                            };
+                            photo.contribution = contribution;
+                            return photo;
+                        }).catch(function (error) {
+                            return Promise.reject(error);
+                        });
+                }).catch(function (error) {
+                    console.log(error);
+                    return Promise.reject(error);
+                });
+        }).catch(function (error) {
+            console.log(error);
+            return Promise.reject(error);
+        });
 }
 
 function updateSong(song, user) {
