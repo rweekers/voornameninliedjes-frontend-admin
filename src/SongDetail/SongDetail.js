@@ -24,16 +24,33 @@ class SongDetail extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    // TODO make sure it does not fire always (debounceTime?)
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({ song: { ...this.state.song, [name]: value } })
     }
 
-    // TODO make sure it does not fire always (debounceTime?)
     handleArrayChange(event, index) {
         const { name, value } = event.target;
-        query$.next(value);
+
+        const flickrPhotos = [...this.state.song.flickrPhotos];
+        flickrPhotos[index] = value;
+        this.setState({
+            song: { ...this.state.song, [name]: flickrPhotos }
+        });
+
+        query$.next({ "query": event.target, "index": index });
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        songService.updateSong(this.state.song, this.state.user);
+    }
+
+    updateFlickr(event) {
+        console.log(event);
+        const { name, value } = event.query;
+        const index = event.index;
+        console.log(event + ' ' + name + ' ' + value + ' ' + index);
 
         const flickrPhotos = [...this.state.song.flickrPhotos];
         flickrPhotos[index] = value;
@@ -56,16 +73,12 @@ class SongDetail extends React.Component {
         });
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
-        songService.updateSong(this.state.song, this.state.user);
-    }
-
     componentDidMount() {
         const obs = query$.asObservable();
         const dobs = obs.pipe(debounce(() => timer(500)));
         obs.subscribe(newValue => console.log('old ' + newValue));
         dobs.subscribe(newValue => console.log('debounce ' + newValue));
+        dobs.subscribe(event => this.updateFlickr(event));
 
         this.setState({
             user: JSON.parse(localStorage.getItem('user')),
