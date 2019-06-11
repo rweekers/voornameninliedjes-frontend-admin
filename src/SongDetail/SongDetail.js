@@ -4,7 +4,9 @@ import './SongDetail.css';
 import { BehaviorSubject, timer } from 'rxjs';
 import { debounce } from 'rxjs/operators';
 
-const query$ = new BehaviorSubject({ query: 'react' });
+const query$ = new BehaviorSubject({ query: 0 });
+
+let showPhoto = true;
 
 class SongDetail extends React.Component {
     constructor(props) {
@@ -38,14 +40,19 @@ class SongDetail extends React.Component {
         this.setState({
             song: { ...this.state.song, [name]: flickrPhotos }
         });
+        let self = this;
         songService.getFlickrPhotoInfo(flickrPhotos[0]).then(photo => {
+            showPhoto = true;
             this.setState({
                 photo: photo,
                 contribution: photo.contribution
             });
         }).catch(function (error) {
-            // TODO write code to show image not correct
-            console.log(error);
+            showPhoto = false;
+            self.setState({
+                photo: '',
+                contribution: ''
+            });
         });
     }
 
@@ -56,9 +63,9 @@ class SongDetail extends React.Component {
 
     componentDidMount() {
         const obs = query$.asObservable();
-        const dobs = obs.pipe(debounce(() => timer(1000)));
-        obs.subscribe(newValue => console.log('old' + newValue));
-        dobs.subscribe(newValue => console.log('debounce' + newValue));
+        const dobs = obs.pipe(debounce(() => timer(500)));
+        obs.subscribe(newValue => console.log('old ' + newValue));
+        dobs.subscribe(newValue => console.log('debounce ' + newValue));
 
         this.setState({
             user: JSON.parse(localStorage.getItem('user')),
@@ -138,14 +145,16 @@ class SongDetail extends React.Component {
                                     <label>Spotify:</label>
                                     <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                                 </div>
-                                <div>
-                                    <label>Flickr photo:</label>
-                                    <img
-                                        src={`https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_c.jpg`}
-                                        alt={photo.title}
-                                    />
-                                    <div className="attribution"><a href={contribution.photoUrl} target="_blank" rel="noopener noreferrer">Photo</a> by <a href={contribution.ownerUrl} target="_blank" rel="noopener noreferrer">{contribution.ownerName}</a> / <a href={contribution.licenseUrl} target="_blank" rel="noopener noreferrer">{contribution.licenseName}</a></div>
-                                </div>
+                                {showPhoto &&
+                                    <div>
+                                        <label>Flickr photo:</label>
+                                        <img
+                                            src={`https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_c.jpg`}
+                                            alt={photo.title}
+                                        />
+                                        <div className="attribution"><a href={contribution.photoUrl} target="_blank" rel="noopener noreferrer">Photo</a> by <a href={contribution.ownerUrl} target="_blank" rel="noopener noreferrer">{contribution.ownerName}</a> / <a href={contribution.licenseUrl} target="_blank" rel="noopener noreferrer">{contribution.licenseName}</a></div>
+                                    </div>}
+                                {!showPhoto && <div><h1>Geen geldig Flickr id!</h1></div>}
                             </fieldset>
                         </content>
                         <content className="song-footer">
