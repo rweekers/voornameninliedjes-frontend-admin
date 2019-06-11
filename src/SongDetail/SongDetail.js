@@ -1,6 +1,10 @@
 import React from 'react';
 import { songService } from '../services/song.service';
 import './SongDetail.css';
+import { BehaviorSubject, timer } from 'rxjs';
+import { debounce } from 'rxjs/operators';
+
+const query$ = new BehaviorSubject({ query: 'react' });
 
 class SongDetail extends React.Component {
     constructor(props) {
@@ -27,6 +31,8 @@ class SongDetail extends React.Component {
     // TODO make sure it does not fire always (debounceTime?)
     handleArrayChange(event, index) {
         const { name, value } = event.target;
+        query$.next(value);
+
         const flickrPhotos = [...this.state.song.flickrPhotos];
         flickrPhotos[index] = value;
         this.setState({
@@ -49,6 +55,11 @@ class SongDetail extends React.Component {
     }
 
     componentDidMount() {
+        const obs = query$.asObservable();
+        const dobs = obs.pipe(debounce(() => timer(1000)));
+        obs.subscribe(newValue => console.log('old' + newValue));
+        dobs.subscribe(newValue => console.log('debounce' + newValue));
+
         this.setState({
             user: JSON.parse(localStorage.getItem('user')),
         });
