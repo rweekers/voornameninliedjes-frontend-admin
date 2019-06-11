@@ -95,6 +95,10 @@ class SongDetail extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        query$.unsubscribe();
+    }
+
     render() {
         const song = this.state.song;
         const photo = this.state.photo;
