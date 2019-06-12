@@ -47,10 +47,8 @@ class SongDetail extends React.Component {
     }
 
     updateFlickr(event) {
-        console.log(event);
         const { name, value } = event.query;
         const index = event.index;
-        console.log(event + ' ' + name + ' ' + value + ' ' + index);
 
         const flickrPhotos = [...this.state.song.flickrPhotos];
         flickrPhotos[index] = value;
@@ -76,8 +74,6 @@ class SongDetail extends React.Component {
     componentDidMount() {
         const obs = query$.asObservable();
         const dobs = obs.pipe(debounce(() => timer(500)));
-        obs.subscribe(newValue => console.log('old ' + newValue));
-        dobs.subscribe(newValue => console.log('debounce ' + newValue));
         dobs.subscribe(event => this.updateFlickr(event));
 
         this.setState({
@@ -145,6 +141,15 @@ class SongDetail extends React.Component {
                                         <input key={index} type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
                                     ))}
                                 </div>
+                                {song.logs && <div>
+                                    <ul>
+                                        {song.logs.sort((a, b) => Date.parse(a.date) < Date.parse(b.date)).map((log, index) =>
+                                            <li key={index}>
+                                                <p>{log.date} - {log.user}</p>
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>}
                             </fieldset>
                         </content>
                         <content className="song-metadata">
