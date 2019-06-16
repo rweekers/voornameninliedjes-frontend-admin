@@ -13,7 +13,7 @@ class SongDetail extends React.Component {
         super(props);
 
         this.state = {
-            song: { artist: 'loading', title: 'loading', name: 'loading', spotify: 'loading', youtube: 'loading', background: 'loading', flickrPhotos: [] },
+            song: { artist: '', title: '', name: '', spotify: '', youtube: '', background: '', flickrPhotos: [] },
             user: {},
             photo: '',
             contribution: ''
@@ -22,6 +22,7 @@ class SongDetail extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleArrayChange = this.handleArrayChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.addNewPhoto = this.addNewPhoto.bind(this);
     }
 
     handleChange(event) {
@@ -44,6 +45,16 @@ class SongDetail extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         songService.updateSong(this.state.song, this.state.user);
+    }
+
+    addNewPhoto() {
+        console.log('bla');
+        let newPhoto = '';
+        const flickrPhotos = [...this.state.song.flickrPhotos];
+        flickrPhotos.push(newPhoto);
+        this.setState({
+            song: { ...this.state.song, 'flickrPhotos': flickrPhotos }
+        });
     }
 
     updateFlickr(event) {
@@ -82,12 +93,14 @@ class SongDetail extends React.Component {
         const songId = this.props.match.params.id;
         songService.getSong(songId).then(song => {
             this.setState({ song });
-            songService.getFlickrPhotoInfo(song.flickrPhotos[0]).then(photo => {
-                this.setState({
-                    photo: photo,
-                    contribution: photo.contribution
+            if (song.flickrPhotos.length > 0) {
+                songService.getFlickrPhotoInfo(song.flickrPhotos[0]).then(photo => {
+                    this.setState({
+                        photo: photo,
+                        contribution: photo.contribution
+                    });
                 });
-            });
+            }
         });
     }
 
@@ -141,6 +154,9 @@ class SongDetail extends React.Component {
                                         <input key={index} type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
                                     ))}
                                 </div>
+                                {song.flickrPhotos.length === 0 && <button onClick={this.addNewPhoto}>
+                                    Nieuwe foto toevoegen
+                                </button>}
                                 {song.logs && <div>
                                     <ul>
                                         {song.logs.sort((a, b) => Date.parse(a.date) < Date.parse(b.date)).map((log, index) =>
