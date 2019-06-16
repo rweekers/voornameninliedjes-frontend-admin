@@ -36,6 +36,7 @@ class SongsPage extends React.Component {
                 <button onClick={(e) => this.handleClick('TO_BE_DELETED')} disabled={this.state.filter === 'TO_BE_DELETED'}>
                     Show to be deleted
                 </button>
+                <Link to={'/songs/new'}>Nieuw nummer invoeren</Link>
                 {songs.length > 0 &&
                     <ul>
                         {songs.filter(song => song.status === this.state.filter).map((song, index) =>

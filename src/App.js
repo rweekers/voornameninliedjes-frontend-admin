@@ -96,6 +96,7 @@ class App extends React.Component {
               <PrivateRoute exact path="/songs" component={SongsPage} />
               <PrivateRoute exact path="/" component={HomePage} />
               <PrivateRoute exact path="/songs/:id" component={SongDetail} />
+              <PrivateRoute exact path="/songs/new" component={SongDetail} />
               <Route path="/login" render={(props) => <LoginPage {...props} action={this.handleLogin} />} />
             </div>
           </Router>
