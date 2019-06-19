@@ -3,6 +3,7 @@ import { songService } from '../services/song.service';
 import './SongDetail.css';
 import { BehaviorSubject, timer } from 'rxjs';
 import { debounce } from 'rxjs/operators';
+import ReactMarkdown from 'react-markdown';
 
 const query$ = new BehaviorSubject({ query: 0 });
 
@@ -85,7 +86,7 @@ class SongDetail extends React.Component {
     componentDidMount() {
         const obs = query$.asObservable();
         const dobs = obs.pipe(debounce(() => timer(500)));
-        dobs.subscribe(event => this.updateFlickr(event));
+        this.subscription = dobs.subscribe(event => this.updateFlickr(event));
 
         this.setState({
             user: JSON.parse(localStorage.getItem('user')),
@@ -105,7 +106,9 @@ class SongDetail extends React.Component {
     }
 
     componentWillUnmount() {
-        query$.unsubscribe();
+        if (this.subscription !== null) {
+            this.subscription.unsubscribe();
+        }
     }
 
     render() {
@@ -157,7 +160,8 @@ class SongDetail extends React.Component {
                                 {song.flickrPhotos.length === 0 && <button onClick={this.addNewPhoto}>
                                     Nieuwe foto toevoegen
                                 </button>}
-                                {song.logs && <div>
+                                {/* TODO Add logs when sorting is ok */}
+                                {/* {song.logs && <div>
                                     <ul>
                                         {song.logs.sort((a, b) => Date.parse(a.date) < Date.parse(b.date)).map((log, index) =>
                                             <li key={index}>
@@ -165,7 +169,7 @@ class SongDetail extends React.Component {
                                             </li>
                                         )}
                                     </ul>
-                                </div>}
+                                </div>} */}
                             </fieldset>
                         </content>
                         <content className="song-metadata">
@@ -174,6 +178,7 @@ class SongDetail extends React.Component {
                                 <div>
                                     <label>Achtergrond:</label>
                                     <textarea name="background" value={this.state.song.background} onChange={this.handleChange} />
+                                    <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
                                 </div>
                                 <div>
                                     <label>YouTube:</label>
