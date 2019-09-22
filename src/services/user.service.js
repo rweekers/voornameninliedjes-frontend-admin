@@ -6,7 +6,7 @@ export const userService = {
     getAll
 };
 
-const apiUrl = 'http://admin.voornameninliedjes.nl'
+const apiUrl = 'https://admin.voornameninliedjes.nl'
 
 function login(username, password) {
     const requestOptions = {
