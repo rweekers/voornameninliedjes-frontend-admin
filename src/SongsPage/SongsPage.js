@@ -2,7 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { songService } from '../services/song.service';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import './SongsPage.css';
 
 class SongsPage extends React.Component {
     constructor(props) {
@@ -26,17 +28,18 @@ class SongsPage extends React.Component {
 
     render() {
         const { songs } = this.state;
+
         return (
             <div>
                 <h3>Songs</h3>
                 <Button onClick={(e) => this.handleClick('SHOW')} disabled={this.state.filter === 'SHOW'} variant="contained" color="primary">
-                    Show active
+                    Actieve nummers
                 </Button>
                 <Button onClick={(e) => this.handleClick('IN_PROGRESS')} disabled={this.state.filter === 'IN_PROGRESS'} variant="contained" color="primary">
-                    Show in progress
+                    Nummers in bewerking
                 </Button>
                 <Button onClick={(e) => this.handleClick('TO_BE_DELETED')} disabled={this.state.filter === 'TO_BE_DELETED'} variant="contained" color="primary">
-                    Show to be deleted
+                    Nummers te verwijderen
                 </Button>
                 <Link to={'/songs/new'}>
                     <Button variant="contained" color="secondary">
@@ -48,7 +51,16 @@ class SongsPage extends React.Component {
                         {songs.filter(song => song.status === this.state.filter).map((song, index) =>
                             <li key={song.id}>
                                 <Typography variant="body1" gutterBottom>
-                                    <Link to={'/songs/' + song.id}>{song.artist} - {song.title} [{song.status}]</Link>
+                                    <Link to={'/songs/' + song.id}>
+                                        <Paper>
+                                            <Typography variant="h5" component="h3">
+                                                {song.artist}
+                                            </Typography>
+                                            <Typography component="p">
+                                                {song.title} [{song.status}]
+                                            </Typography>
+                                        </Paper>
+                                    </Link>
                                 </Typography>
                             </li>
                         )}
