@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
 import { userService } from '../services/user.service';
 
 class HomePage extends React.Component {
@@ -24,19 +24,16 @@ class HomePage extends React.Component {
         const { users } = this.state;
         return (
             <div>
-                <h3>Users from secure api end point:</h3>
+                <Typography variant="h3" gutterBottom>Gebruikers</Typography>
                 {users.length &&
                     <ul>
                         {users.map((user, index) =>
                             <li key={user.id}>
-                                {user.username} - {user.roles[0]}
+                                <Typography variant="h5" gutterBottom>{user.username} - {user.roles[0]}</Typography>
                             </li>
                         )}
                     </ul>
                 }
-                <p>
-                    <Link to="/login">Logout</Link>
-                </p>
             </div>
         );
     }

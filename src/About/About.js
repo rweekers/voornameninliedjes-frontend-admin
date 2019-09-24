@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import Typography from '@material-ui/core/Typography';
 
 class About extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class About extends React.Component {
 
         return (
             <div>
-                <h3>About</h3>
+            <Typography variant="h3" gutterBottom>About</Typography>
                 <ReactMarkdown source={input} />
             </div>
         );

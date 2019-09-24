@@ -7,6 +7,7 @@ import { SongsPage } from './SongsPage/SongsPage';
 import { SongDetail } from './SongDetail/SongDetail';
 import { About } from './About/About';
 import { UserContext } from './user-context';
+import Typography from '@material-ui/core/Typography';
 import './App.css';
 
 class App extends React.Component {
@@ -79,18 +80,18 @@ class App extends React.Component {
                 <ul>
                   <button onClick={() => { this.changeText() }}>{text}</button>
                   <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
-                    <Link to="/">Users</Link>
+                    <Link to="/">Gebruikers</Link>
                   </li>
                   <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
-                    <Link to="/songs/">Songs</Link>
+                    <Link to="/songs/">Nummers</Link>
                   </li>
                   <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
-                    <Link to="/about/">About</Link>
+                    <Link to="/about/">Over</Link>
                   </li>
                 </ul>
               </nav>
               <div className="login" hidden={!this.state.loggedIn}>
-                {loggedIn && user !== null && <div><p>Ingelogd als {user.username}</p><Link to="/login">Logout</Link></div>}
+                {loggedIn && user !== null && <div><Typography variant="h5" gutterBottom>Ingelogd als {user.username} <Link to="/login">Uitloggen</Link></Typography></div>}
               </div>
               <PrivateRoute exact path="/about" component={About} />
               <PrivateRoute exact path="/songs" component={SongsPage} />

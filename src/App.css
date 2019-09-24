@@ -92,7 +92,11 @@ nav button {
   color: #61dafb;
 }
 
-.login p {
+.login {
   text-align: right;
   padding: 0 1% 0 0;
+}
+
+.login p {
+  display: inline;
 }

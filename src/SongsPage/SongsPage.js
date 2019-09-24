@@ -31,7 +31,7 @@ class SongsPage extends React.Component {
 
         return (
             <div>
-                <h3>Songs</h3>
+                <Typography variant="h3" gutterBottom>Nummers</Typography>
                 <Button onClick={(e) => this.handleClick('SHOW')} disabled={this.state.filter === 'SHOW'} variant="contained" color="primary">
                     Actieve nummers
                 </Button>
@@ -57,7 +57,7 @@ class SongsPage extends React.Component {
                                                 {song.artist}
                                             </Typography>
                                             <Typography component="p">
-                                                {song.title} [{song.status}]
+                                                {song.title}
                                             </Typography>
                                         </Paper>
                                     </Link>
