@@ -4,6 +4,7 @@ import { songService } from '../services/song.service';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/styles';
 import './SongsPage.css';
 
 class SongsPage extends React.Component {
@@ -16,6 +17,11 @@ class SongsPage extends React.Component {
         };
 
         this.handleClick = this.handleClick.bind(this);
+        // this.useStyles = makeStyles(theme => ({
+        //     root: {
+        //       padding: theme.spacing(3, 2),
+        //     },
+        //   }));
     }
 
     componentDidMount() {
@@ -28,6 +34,8 @@ class SongsPage extends React.Component {
 
     render() {
         const { songs } = this.state;
+        // const classes = this.useStyles();
+        // console.log('root ' + classes.root);
 
         return (
             <div>
