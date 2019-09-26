@@ -17,11 +17,6 @@ class SongsPage extends React.Component {
         };
 
         this.handleClick = this.handleClick.bind(this);
-        // this.useStyles = makeStyles(theme => ({
-        //     root: {
-        //       padding: theme.spacing(3, 2),
-        //     },
-        //   }));
     }
 
     componentDidMount() {
@@ -32,10 +27,24 @@ class SongsPage extends React.Component {
         this.setState({ filter: status })
     }
 
+    useStyles() {
+        makeStyles(theme => ({
+            root: {
+                padding: theme.spacing(3, 2),
+            },
+        }));
+    }
+
     render() {
         const { songs } = this.state;
         // const classes = this.useStyles();
-        // console.log('root ' + classes.root);
+        const classes = makeStyles(theme => ({
+            root: {
+                padding: theme.spacing(3, 2),
+            },
+        }));
+        console.log('root ' + classes);
+        console.log('root ' + classes.root);
 
         return (
             <div>
@@ -55,24 +64,20 @@ class SongsPage extends React.Component {
                 </Button>
                 </Link>
                 {songs.length > 0 &&
-                    <ul>
+                    <div>
                         {songs.filter(song => song.status === this.state.filter).map((song, index) =>
-                            <li key={song.id}>
-                                <Typography variant="body1" gutterBottom>
-                                    <Link to={'/songs/' + song.id}>
-                                        <Paper>
-                                            <Typography variant="h5" component="h3">
-                                                {song.artist}
-                                            </Typography>
-                                            <Typography component="p">
-                                                {song.title}
-                                            </Typography>
-                                        </Paper>
-                                    </Link>
-                                </Typography>
-                            </li>
+                            <Link key={song.id} to={'/songs/' + song.id}>
+                                <Paper>
+                                    <Typography variant="h5" component="h3">
+                                        {song.artist}
+                                    </Typography>
+                                    <Typography component="p">
+                                        {song.title}
+                                    </Typography>
+                                </Paper>
+                            </Link>
                         )}
-                    </ul>
+                    </div>
                 }
             </div>
         );
