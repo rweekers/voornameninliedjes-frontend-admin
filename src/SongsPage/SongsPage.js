@@ -4,8 +4,8 @@ import { songService } from '../services/song.service';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/styles';
 import './SongsPage.css';
+import HigherOrderComponent from './HigherOrderComponent';
 
 class SongsPage extends React.Component {
     constructor(props) {
@@ -27,24 +27,8 @@ class SongsPage extends React.Component {
         this.setState({ filter: status })
     }
 
-    useStyles() {
-        makeStyles(theme => ({
-            root: {
-                padding: theme.spacing(3, 2),
-            },
-        }));
-    }
-
     render() {
         const { songs } = this.state;
-        // const classes = this.useStyles();
-        const classes = makeStyles(theme => ({
-            root: {
-                padding: theme.spacing(3, 2),
-            },
-        }));
-        console.log('root ' + classes);
-        console.log('root ' + classes.root);
 
         return (
             <div>
@@ -62,12 +46,13 @@ class SongsPage extends React.Component {
                     <Button variant="contained" color="secondary">
                         Nieuw nummer invoeren
                 </Button>
+                <HigherOrderComponent/>
                 </Link>
                 {songs.length > 0 &&
                     <div>
                         {songs.filter(song => song.status === this.state.filter).map((song, index) =>
                             <Link key={song.id} to={'/songs/' + song.id}>
-                                <Paper>
+                                <Paper style={{padding: 24}}>
                                     <Typography variant="h5" component="h3">
                                         {song.artist}
                                     </Typography>
@@ -84,4 +69,9 @@ class SongsPage extends React.Component {
     }
 }
 
+// SongsPage.propTypes = {
+//     classes: PropTypes.object.isRequired,
+//   };
+
+// export default withStyles(styles)(SongsPage);
 export { SongsPage };
