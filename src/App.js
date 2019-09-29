@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { PrivateRoute } from './components/PrivateRoute';
 import { LoginPage } from './LoginPage/LoginPage';
 import { HomePage } from './HomePage/HomePage';
-import { SongsPage } from './SongsPage/SongsPage';
+import SongsPage from './SongsPage/SongsPage';
 import { SongDetail } from './SongDetail/SongDetail';
 import { About } from './About/About';
 import { UserContext } from './user-context';

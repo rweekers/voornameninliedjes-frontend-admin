@@ -1,11 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { songService } from '../services/song.service';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import './SongsPage.css';
-import HigherOrderComponent from './HigherOrderComponent';
+import MaterialButton from '../material-coponents/MaterialButton';
+import { withStyles } from '@material-ui/styles';
+import MaterialPaper from '../material-coponents/MaterialPaper';
+
+const styles = theme => ({
+    root: {
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        border: 1,
+        borderRadius: 3,
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        color: 'white',
+        height: 48,
+        width: 100,
+        padding: '0 30px',
+    },
+});
 
 class SongsPage extends React.Component {
     constructor(props) {
@@ -29,6 +45,7 @@ class SongsPage extends React.Component {
 
     render() {
         const { songs } = this.state;
+        const { classes } = this.props;
 
         return (
             <div>
@@ -46,13 +63,14 @@ class SongsPage extends React.Component {
                     <Button variant="contained" color="secondary">
                         Nieuw nummer invoeren
                 </Button>
-                <HigherOrderComponent/>
+                    <MaterialButton />
                 </Link>
                 {songs.length > 0 &&
                     <div>
                         {songs.filter(song => song.status === this.state.filter).map((song, index) =>
                             <Link key={song.id} to={'/songs/' + song.id}>
-                                <Paper style={{padding: 24}}>
+                                <MaterialPaper />
+                                <Paper className={classes.root}>
                                     <Typography variant="h5" component="h3">
                                         {song.artist}
                                     </Typography>
@@ -69,9 +87,15 @@ class SongsPage extends React.Component {
     }
 }
 
+SongsPage.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(SongsPage);
+
 // SongsPage.propTypes = {
 //     classes: PropTypes.object.isRequired,
 //   };
 
 // export default withStyles(styles)(SongsPage);
-export { SongsPage };
+// export { SongsPage };

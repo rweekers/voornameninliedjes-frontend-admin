@@ -15,13 +15,13 @@ const styles = {
   },
 };
 
-function HigherOrderComponent(props) {
+function MaterialButton(props) {
   const { classes } = props;
-  return <Button className={classes.root}>Higher-order component</Button>;
+  return <Button className={classes.root}>Test-button component</Button>;
 }
 
-HigherOrderComponent.propTypes = {
+MaterialButton.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(HigherOrderComponent);
+export default withStyles(styles)(MaterialButton);
