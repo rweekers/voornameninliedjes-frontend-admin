@@ -14,7 +14,7 @@ class SongDetail extends React.Component {
         super(props);
 
         this.state = {
-            song: { artist: '', title: '', name: '', spotify: '', youtube: '', background: '', flickrPhotos: [] },
+            song: { artist: '', title: '', name: '', spotify: '', youtube: '', background: '', flickrPhotos: [], wikimediaPhotos: [] },
             user: {},
             photo: '',
             contribution: ''
@@ -24,6 +24,7 @@ class SongDetail extends React.Component {
         this.handleArrayChange = this.handleArrayChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.addNewPhoto = this.addNewPhoto.bind(this);
+        this.addNewWikimediaPhoto = this.addNewWikimediaPhoto.bind(this);
     }
 
     handleChange(event) {
@@ -43,18 +44,52 @@ class SongDetail extends React.Component {
         query$.next({ "query": event.target, "index": index });
     }
 
+    handleWikimediaChange(event, index) {
+        const { value } = event.target;
+
+        const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
+        wikimediaPhotos[0].url = value;
+
+        this.setState({
+            song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos }
+        });
+        console.log(this.state.song);
+    }
+
+    handleWikimediaChange2(event, index) {
+        const { value } = event.target;
+
+        const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
+        wikimediaPhotos[0].attribution = value;
+
+        this.setState({
+            song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos }
+        });
+        console.log(this.state.song);
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         songService.updateSong(this.state.song, this.state.user);
     }
 
     addNewPhoto() {
-        console.log('bla');
         let newPhoto = '';
         const flickrPhotos = [...this.state.song.flickrPhotos];
         flickrPhotos.push(newPhoto);
         this.setState({
             song: { ...this.state.song, 'flickrPhotos': flickrPhotos }
+        });
+    }
+
+    addNewWikimediaPhoto() {
+        let newPhoto = {};
+        newPhoto.url = '';
+        newPhoto.attribution = '';
+        const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
+        wikimediaPhotos.push(newPhoto);
+        this.setState({
+            song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos }
         });
     }
 
@@ -92,6 +127,7 @@ class SongDetail extends React.Component {
             user: JSON.parse(localStorage.getItem('user')),
         });
         const songId = this.props.match.params.id;
+
         songService.getSong(songId).then(song => {
             this.setState({ song });
             if (song.flickrPhotos.length > 0) {
@@ -159,6 +195,18 @@ class SongDetail extends React.Component {
                                 </div>
                                 {song.flickrPhotos.length === 0 && <button onClick={this.addNewPhoto}>
                                     Nieuwe foto toevoegen
+                                </button>}
+                                <div className="line">
+                                    <label>Wikipedia foto:</label>
+                                    {song.wikimediaPhotos.map((item, index) => (
+                                        <div key={index}>
+                                            <input type="text" name={'wikimediaUrl'} value={item.url} onChange={event => this.handleWikimediaChange(event, index)} />
+                                            <input type="text" name={'wikimediaContribution'} value={item.attribution} onChange={event => this.handleWikimediaChange2(event, index)} />
+                                        </div>
+                                    ))}
+                                </div>
+                                {song.wikimediaPhotos.length === 0 && <button onClick={this.addNewWikimediaPhoto}>
+                                    Nieuwe wikimedia foto toevoegen
                                 </button>}
                                 {/* TODO Add logs when sorting is ok */}
                                 {/* {song.logs && <div>
