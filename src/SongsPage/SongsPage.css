@@ -6,17 +6,3 @@ body {
 a {
     text-decoration: none;
 }
-
-.songsFilter {
-    text-align: center;
-    display: inline-block;
-}
-
-.songsList {
-    text-align: center;
-    display: inline-block;
-}
-
-.songItem {
-    display: inline;
-}

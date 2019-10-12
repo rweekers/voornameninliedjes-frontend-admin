@@ -10,7 +10,6 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid'
-import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
@@ -21,7 +20,7 @@ const styles = theme => ({
         flexGrow: 1,
     },
     card: {
-        // maxWidth: 345,
+        height: 300,
     },
     media: {
         height: 140,
@@ -60,48 +59,44 @@ class SongsPage extends React.Component {
         const { classes } = this.props;
 
         return (
-            <div className="songsFilter">
-                <Container>
-                    <div>
-                        <Grid container direction="row" justify="center" alignItems="stretch" spacing={3}>
-                            <Grid item xs={12}>
-                                <Typography variant="h5" gutterBottom>Nummers</Typography>
-                                <FormGroup row>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch checked={this.state.filters.includes('SHOW')} onChange={this.handleChange('SHOW')} value="SHOW" color="primary" />
-                                        }
-                                        label="Actieve nummers"
-                                        labelPlacement="start"
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                            <Switch checked={this.state.filters.includes('IN_PROGRESS')} onChange={this.handleChange('IN_PROGRESS')} value="IN_PROGRESS" color="secondary" />
-                                        }
-                                        label="Nummers in bewerking"
-                                        labelPlacement="start"
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                            <Switch checked={this.state.filters.includes('TO_BE_DELETED')} onChange={this.handleChange('TO_BE_DELETED')} value="TO_BE_DELETED" color="secondary" />
-                                        }
-                                        label="Nummers te verwijderen"
-                                        labelPlacement="start"
-                                    /></FormGroup>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Link key='new' to={'/songs/new'}>
-                                    <Button variant="contained" color="primary">
-                                        Nieuw nummer invoeren
+            <div className={classes.root}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5" gutterBottom>Nummers</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                    <Switch checked={this.state.filters.includes('SHOW')} onChange={this.handleChange('SHOW')} value="SHOW" color="primary" />
+                                }
+                                label="Actieve nummers"
+                                labelPlacement="start"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch checked={this.state.filters.includes('IN_PROGRESS')} onChange={this.handleChange('IN_PROGRESS')} value="IN_PROGRESS" color="secondary" />
+                                }
+                                label="Nummers in bewerking"
+                                labelPlacement="start"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch checked={this.state.filters.includes('TO_BE_DELETED')} onChange={this.handleChange('TO_BE_DELETED')} value="TO_BE_DELETED" color="secondary" />
+                                }
+                                label="Nummers te verwijderen"
+                                labelPlacement="start"
+                            /></FormGroup>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Link key='new' to={'/songs/new'}>
+                            <Button variant="contained" color="primary">
+                                Nieuw nummer invoeren
                                 </Button>
-                                </Link>
-                            </Grid>
-                        </Grid>
-                    </div>
-                </Container>
-                {songs.length > 0 && songs.filter(song => this.state.filters.includes(song.status)).map((song, index) =>
-                    <Grid container direction="row" justify="center" alignItems="stretch" spacing={3}>
-                        <Grid item xs={4}>
+                        </Link>
+                    </Grid>
+                    {songs.length > 0 && songs.filter(song => this.state.filters.includes(song.status)).map((song, index) =>
+                        <Grid key={song.id} item xs={12} sm={6} md={4} lg={3}>
                             <Link key={song.id} to={'/songs/' + song.id}>
                                 <Card className={classes.card}>
                                     <CardActionArea>
@@ -122,10 +117,10 @@ class SongsPage extends React.Component {
                                 </Card>
                             </Link>
                         </Grid>
-                    </Grid>
-                )}
-            </div >
-        );
+                    )}
+                </Grid>
+            </div>
+        )
     }
 }
 
