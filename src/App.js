@@ -7,8 +7,18 @@ import SongsPage from './SongsPage/SongsPage';
 import { SongDetail } from './SongDetail/SongDetail';
 import { About } from './About/About';
 import { UserContext } from './user-context';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import SearchAppBar from './material-coponents/SearchAppBar'
 import './App.css';
+
+const styles = theme => ({
+  button: {
+    color: 'white'
+  },
+});
 
 class App extends React.Component {
   constructor(props) {
@@ -69,29 +79,17 @@ class App extends React.Component {
   render() {
     const user = this.state.user;
     const loggedIn = this.state.loggedIn;
-    const { text } = this.state;
+
+    const { classes } = this.props;
 
     return (
       <div className="App">
         <UserContext.Provider value={this.state}>
           <Router>
             <div>
-              <nav hidden={!this.state.loggedIn}>
-                <ul>
-                  <button onClick={() => { this.changeText() }}>{text}</button>
-                  <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
-                    <Link to="/">Gebruikers</Link>
-                  </li>
-                  <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
-                    <Link to="/songs/">Nummers</Link>
-                  </li>
-                  <li className={`${text !== '☰' ? 'menuLink' : 'menuLink-hidden'}`}>
-                    <Link to="/about/">Over</Link>
-                  </li>
-                </ul>
-              </nav>
+              <SearchAppBar loggedOut={!this.state.loggedIn} />
               <div className="login" hidden={!this.state.loggedIn}>
-                {loggedIn && user !== null && <div><Typography variant="h5" gutterBottom>Ingelogd als {user.username} <Link to="/login">Uitloggen</Link></Typography></div>}
+                {loggedIn && user !== null && <div><Typography variant="subtitle1" gutterBottom>Ingelogd als {user.username} <Link to="/login"><Button className={classes.button}>Uitloggen</Button></Link></Typography></div>}
               </div>
               <PrivateRoute exact path="/about" component={About} />
               <PrivateRoute exact path="/songs" component={SongsPage} />
@@ -109,4 +107,8 @@ class App extends React.Component {
 
 App.contextType = UserContext;
 
-export default App;
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(App);

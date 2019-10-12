@@ -9,21 +9,22 @@ import { withStyles } from '@material-ui/styles';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
+import Grid from '@material-ui/core/Grid'
+import Container from '@material-ui/core/Container';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 
 const styles = theme => ({
     root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        overflow: 'hidden',
-        backgroundColor: 'gray',
+        flexGrow: 1,
     },
-    gridList: {
-        width: 500,
-        height: 450,
+    card: {
+        // maxWidth: 345,
+    },
+    media: {
+        height: 140,
     },
 });
 
@@ -39,18 +40,9 @@ class SongsPage extends React.Component {
 
     componentDidMount() {
         songService.getDone().then(songs => {
-            songs.map(song => this.setImage(song))
             this.setState({ songs })
         }
         );
-    }
-
-    setImage(song) {
-        if (song.wikimediaPhotos.length > 0) {
-            song.image = song.wikimediaPhotos[0].url;
-            return;
-        }
-        song.image = 'https://material-ui.com/static/images/grid-list/hats.jpg';
     }
 
     handleChange = name => event => {
@@ -69,47 +61,70 @@ class SongsPage extends React.Component {
 
         return (
             <div className="songsFilter">
-                <Typography variant="h3" gutterBottom>Nummers</Typography>
-                <FormGroup row>
-                    <FormControlLabel
-                        control={
-                            <Switch checked={this.state.filters.includes('SHOW')} onChange={this.handleChange('SHOW')} value="SHOW" />
-                        }
-                        label="Actieve nummers"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Switch checked={this.state.filters.includes('IN_PROGRESS')} onChange={this.handleChange('IN_PROGRESS')} value="IN_PROGRESS" />
-                        }
-                        label="Nummers in bewerking"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Switch checked={this.state.filters.includes('TO_BE_DELETED')} onChange={this.handleChange('TO_BE_DELETED')} value="TO_BE_DELETED" />
-                        }
-                        label="Nummers te verwijderen"
-                    /></FormGroup>
-                <Link key='new' to={'/songs/new'}>
-                    <Button variant="contained" color="secondary">
-                        Nieuw nummer invoeren
-                    </Button>
-                </Link>
-                <br />
-                <GridList cellHeight={210} width={150} className={classes.gridList} cols={2}>
-                    {songs.length > 0 && songs.filter(song => this.state.filters.includes(song.status)).map((song, index) =>
-                        <GridListTile key={song.id}>
+                <Container>
+                    <div>
+                        <Grid container direction="row" justify="center" alignItems="stretch" spacing={3}>
+                            <Grid item xs={12}>
+                                <Typography variant="h5" gutterBottom>Nummers</Typography>
+                                <FormGroup row>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch checked={this.state.filters.includes('SHOW')} onChange={this.handleChange('SHOW')} value="SHOW" color="primary" />
+                                        }
+                                        label="Actieve nummers"
+                                        labelPlacement="start"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Switch checked={this.state.filters.includes('IN_PROGRESS')} onChange={this.handleChange('IN_PROGRESS')} value="IN_PROGRESS" color="secondary" />
+                                        }
+                                        label="Nummers in bewerking"
+                                        labelPlacement="start"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Switch checked={this.state.filters.includes('TO_BE_DELETED')} onChange={this.handleChange('TO_BE_DELETED')} value="TO_BE_DELETED" color="secondary" />
+                                        }
+                                        label="Nummers te verwijderen"
+                                        labelPlacement="start"
+                                    /></FormGroup>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Link key='new' to={'/songs/new'}>
+                                    <Button variant="contained" color="primary">
+                                        Nieuw nummer invoeren
+                                </Button>
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </div>
+                </Container>
+                {songs.length > 0 && songs.filter(song => this.state.filters.includes(song.status)).map((song, index) =>
+                    <Grid container direction="row" justify="center" alignItems="stretch" spacing={3}>
+                        <Grid item xs={4}>
                             <Link key={song.id} to={'/songs/' + song.id}>
-                                <img src={song.image} alt={song.artist} />
-                                <GridListTileBar
-                                    title={song.title}
-                                    subtitle={<span>by: {song.artist}</span>}
-                                />
+                                <Card className={classes.card}>
+                                    <CardActionArea>
+                                        <CardMedia
+                                            className={classes.media}
+                                            image={song.artistImage}
+                                            title={song.artist}
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="h2">
+                                                {song.artist} - {song.title}
+                                            </Typography>
+                                            <Typography variant="body2" color="textSecondary" component="p">
+                                                {song.background}
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                </Card>
                             </Link>
-                        </GridListTile>
-                    )}
-                </GridList>
-                }
-            </div>
+                        </Grid>
+                    </Grid>
+                )}
+            </div >
         );
     }
 }
