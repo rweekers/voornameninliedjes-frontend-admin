@@ -4,7 +4,7 @@ import { PrivateRoute } from './components/PrivateRoute';
 import { LoginPage } from './LoginPage/LoginPage';
 import { HomePage } from './HomePage/HomePage';
 import SongsPage from './SongsPage/SongsPage';
-import { SongDetail } from './SongDetail/SongDetail';
+import SongDetail from './SongDetail/SongDetail';
 import { About } from './About/About';
 import { UserContext } from './user-context';
 import PropTypes from 'prop-types';

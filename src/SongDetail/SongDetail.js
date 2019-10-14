@@ -1,9 +1,32 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { songService } from '../services/song.service';
 import './SongDetail.css';
+import { withStyles } from '@material-ui/styles';
 import { BehaviorSubject, timer } from 'rxjs';
 import { debounce } from 'rxjs/operators';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid'
+import TextField from '@material-ui/core/TextField';
 import ReactMarkdown from 'react-markdown';
+
+const styles = theme => ({
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    textField: {
+        marginLeft: 10,
+        marginRight: 10,
+        width: 250,
+    },
+    input: {
+        color: "white",
+    },
+    dense: {
+        marginTop: 19,
+    },
+});
 
 const query$ = new BehaviorSubject({ query: 0 });
 
@@ -27,10 +50,10 @@ class SongDetail extends React.Component {
         this.addNewWikimediaPhoto = this.addNewWikimediaPhoto.bind(this);
     }
 
-    handleChange(event) {
-        const { name, value } = event.target;
+    handleChange = name => event => {
+        const value = event.target.value;
         this.setState({ song: { ...this.state.song, [name]: value } })
-    }
+    };
 
     handleArrayChange(event, index) {
         const { name, value } = event.target;
@@ -148,114 +171,103 @@ class SongDetail extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         const song = this.state.song;
         const photo = this.state.photo;
         const contribution = this.state.contribution;
         return (
             <div className="Songdetail">
-                <form onSubmit={this.handleSubmit}>
-                    <div className="SongdetailForm">
-                        <header className="song-title"><h1>{song.artist} - {song.title}</h1></header>
-                        <content className="song-details">
-                            <fieldset>
-                                <legend>Details</legend>
-                                <div className="line">
-                                    <label>Artiest:</label>
-                                    <input type="text" name="artist" value={this.state.song.artist} onChange={this.handleChange} />
-                                </div>
-                                <div className="line">
-                                    <label>Naam:</label>
-                                    <input type="text" name="name" value={this.state.song.name} onChange={this.handleChange} />
-                                </div>
-                                <div className="line">
-                                    <label>Title:</label>
-                                    <input type="text" name="title" value={this.state.song.title} onChange={this.handleChange} />
-                                </div>
-                                <div className="line">
-                                    <label>YouTube:</label>
-                                    <input type="text" name="youtube" value={this.state.song.youtube} onChange={this.handleChange} />
-                                </div>
-                                <div className="line">
-                                    <label>Spotify:</label>
-                                    <input type="text" name="spotify" value={this.state.song.spotify} onChange={this.handleChange} />
-                                </div>
-                                <div className="line">
-                                    <label>Status:</label>
-                                    <select name="status" value={this.state.song.status} onChange={this.handleChange}>
-                                        <option value="SHOW">Tonen</option>
-                                        <option value="IN_PROGRESS">Aan het bewerken</option>
-                                        <option value="TO_BE_DELETED">Verwijderd</option>
-                                    </select>
-                                </div>
-                                <div className="line">
-                                    <label>Flickr foto:</label>
-                                    {song.flickrPhotos.map((item, index) => (
-                                        <input key={index} type="text" name={'flickrPhotos'} value={item} onChange={event => this.handleArrayChange(event, index)} />
-                                    ))}
-                                </div>
-                                {song.flickrPhotos.length === 0 && <button onClick={this.addNewPhoto}>
-                                    Nieuwe foto toevoegen
-                                </button>}
-                                <div className="line">
-                                    <label>Wikipedia foto:</label>
-                                    {song.wikimediaPhotos.map((item, index) => (
-                                        <div key={index}>
-                                            <input type="text" name={'wikimediaUrl'} value={item.url} onChange={event => this.handleWikimediaChange(event, index)} />
-                                            <input type="text" name={'wikimediaContribution'} value={item.attribution} onChange={event => this.handleWikimediaChange2(event, index)} />
-                                        </div>
-                                    ))}
-                                </div>
-                                {song.wikimediaPhotos.length === 0 && <button onClick={this.addNewWikimediaPhoto}>
-                                    Nieuwe wikimedia foto toevoegen
-                                </button>}
-                                {/* TODO Add logs when sorting is ok */}
-                                {/* {song.logs && <div>
-                                    <ul>
-                                        {song.logs.sort((a, b) => Date.parse(a.date) < Date.parse(b.date)).map((log, index) =>
-                                            <li key={index}>
-                                                <p>{log.date} - {log.user}</p>
-                                            </li>
-                                        )}
-                                    </ul>
-                                </div>} */}
-                            </fieldset>
-                        </content>
-                        <content className="song-metadata">
-                            <fieldset>
-                                <legend>Achtergrond en media</legend>
-                                <div>
-                                    <label>Achtergrond:</label>
-                                    <textarea name="background" value={this.state.song.background} onChange={this.handleChange} />
-                                    <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
-                                </div>
-                                <div>
-                                    <label>YouTube:</label>
-                                    <iframe src={`https://www.youtube.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
-                                </div>
-                                <div>
-                                    <label>Spotify:</label>
-                                    <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                                </div>
-                                {showPhoto &&
-                                    <div>
-                                        <label>Flickr photo:</label>
-                                        <img
-                                            src={`https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_c.jpg`}
-                                            alt={photo.title}
-                                        />
-                                        <div className="attribution"><a href={contribution.photoUrl} target="_blank" rel="noopener noreferrer">Photo</a> by <a href={contribution.ownerUrl} target="_blank" rel="noopener noreferrer">{contribution.ownerName}</a> / <a href={contribution.licenseUrl} target="_blank" rel="noopener noreferrer">{contribution.licenseName}</a></div>
-                                    </div>}
-                                {!showPhoto && <div><h1>Geen geldig Flickr id!</h1></div>}
-                            </fieldset>
-                        </content>
-                        <content className="song-footer">
-                            <input type="submit" value="Opslaan" />
-                        </content>
-                    </div>
-                </form>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5" gutterBottom>{song.artist} - {song.title}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <form className={classes.container} noValidate autoComplete="off">
+                            <TextField
+                                id="standard-required"
+                                label="Artist"
+                                className={classes.textField}
+                                InputProps={{
+                                    className: classes.input
+                                }}
+                                value={song.artist}
+                                onChange={this.handleChange('artist')}
+                                margin="normal"
+                            />
+                            <TextField
+                                id="standard-required"
+                                label="Title"
+                                value={song.title}
+                                className={classes.textField}
+                                InputProps={{
+                                    className: classes.input
+                                }}
+                                onChange={this.handleChange('title')}
+                                margin="normal"
+                            />
+                            <TextField
+                                required
+                                id="standard-required"
+                                label="Name"
+                                value={song.name}
+                                className={classes.textField}
+                                InputProps={{
+                                    className: classes.input
+                                }}
+                                onChange={this.handleChange('name')}
+                                margin="normal"
+                            />
+                            <TextField
+                                id="outlined-uncontrolled"
+                                label="Youtube"
+                                value={song.youtube}
+                                className={classes.textField}
+                                InputProps={{
+                                    className: classes.input
+                                }}
+                                onChange={this.handleChange('youtube')}
+                                margin="normal"
+                                variant="outlined"
+                            />
+                            <TextField
+                                id="standard-error"
+                                label="Spotify"
+                                value={song.spotify}
+                                className={classes.textField}
+                                InputProps={{
+                                    className: classes.input
+                                }}
+                                onChange={this.handleChange('spotify')}
+                                margin="normal"
+                                variant="filled"
+                            />
+                        </form>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="filled-textarea"
+                            label="Background"
+                            placeholder="<Achtergrondinformatie over het nummer>"
+                            multiline
+                            value={song.background}
+                            className={classes.textField}
+                            InputProps={{
+                                className: classes.input
+                            }}
+                            onChange={this.handleChange('background')}
+                            margin="normal"
+                            variant="filled"
+                        />
+                    </Grid>
+                </Grid>
             </div >
         );
     }
 }
 
-export { SongDetail };
+SongDetail.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(SongDetail);
