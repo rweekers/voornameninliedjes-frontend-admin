@@ -18,10 +18,17 @@ const styles = theme => ({
     textField: {
         marginLeft: 10,
         marginRight: 10,
-        width: 250,
+    },
+    inputLabel: {
+        color: 'orange',
+        borderWidth: '1px',
+        borderColor: 'orange !important',
+        fontSize: 18,
     },
     input: {
-        color: "white",
+        color: 'white',
+        fontSize: 18,
+        width: 600,
     },
     dense: {
         marginTop: 19,
@@ -187,42 +194,55 @@ class SongDetail extends React.Component {
                             <TextField
                                 id="standard-required"
                                 label="Artist"
-                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
                                 InputProps={{
                                     className: classes.input
                                 }}
+                                fullWidth={true}
                                 value={song.artist}
                                 onChange={this.handleChange('artist')}
                                 margin="normal"
+                                variant="outlined"
                             />
                             <TextField
                                 id="standard-required"
                                 label="Title"
                                 value={song.title}
                                 className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
                                 InputProps={{
                                     className: classes.input
                                 }}
                                 onChange={this.handleChange('title')}
                                 margin="normal"
+                                variant="outlined"
                             />
                             <TextField
                                 required
                                 id="standard-required"
                                 label="Name"
                                 value={song.name}
-                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
                                 InputProps={{
                                     className: classes.input
                                 }}
                                 onChange={this.handleChange('name')}
                                 margin="normal"
+                                variant="outlined"
                             />
                             <TextField
                                 id="outlined-uncontrolled"
                                 label="Youtube"
                                 value={song.youtube}
-                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
                                 InputProps={{
                                     className: classes.input
                                 }}
@@ -234,13 +254,15 @@ class SongDetail extends React.Component {
                                 id="standard-error"
                                 label="Spotify"
                                 value={song.spotify}
-                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
                                 InputProps={{
                                     className: classes.input
                                 }}
                                 onChange={this.handleChange('spotify')}
                                 margin="normal"
-                                variant="filled"
+                                variant="outlined"
                             />
                         </form>
                     </Grid>
@@ -251,14 +273,19 @@ class SongDetail extends React.Component {
                             placeholder="<Achtergrondinformatie over het nummer>"
                             multiline
                             value={song.background}
-                            className={classes.textField}
+                            InputLabelProps={{
+                                className: classes.inputLabel
+                            }}
                             InputProps={{
                                 className: classes.input
                             }}
                             onChange={this.handleChange('background')}
                             margin="normal"
-                            variant="filled"
+                            variant="outlined"
                         />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
                     </Grid>
                 </Grid>
             </div >
