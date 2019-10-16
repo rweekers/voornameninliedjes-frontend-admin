@@ -23,29 +23,36 @@ const styles = theme => ({
         marginRight: 10,
     },
     inputLabel: {
-        color: 'orange',
+        color: 'lightgrey !important',
         borderWidth: '1px',
-        borderColor: 'orange !important',
         fontSize: 18,
     },
     input: {
         color: 'white',
         fontSize: 18,
-        width: 600,
+    },
+    multilineInput: {
+        color: 'yellow',
+        // fontSize: 12,
+        marginTop: 19,
     },
     underline: {
-      '&:before': {
-        borderBottomColor: colors.white,
-      },
-      '&:after': {
-        borderBottomColor: colors.white,
-      },
-      '&:hover:before': {
-        borderBottomColor: [colors.white, '!important'],
-      },
+        '&:before': {
+            borderBottomColor: 'lightgrey',
+        },
+        '&:after': {
+            borderBottomColor: 'lightgrey',
+        },
+        '&:hover:before': {
+            borderBottomColor: ['lightgrey', '!important'],
+        },
     },
     dense: {
         marginTop: 19,
+    },
+    notchedOutline: {
+        borderWidth: "1px",
+        borderColor: "lightgrey !important",
     },
 });
 
@@ -206,13 +213,15 @@ class SongDetail extends React.Component {
                     <Grid item xs={12} sm={6}>
                         <form className={classes.container} noValidate autoComplete="off">
                             <TextField
-                                id="standard-required"
+                                required
+                                id="artist"
                                 label="Artist"
+                                className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
                                 InputProps={{
-                                    classes={
+                                    classes: {
                                         input: classes.input,
                                         underline: classes.underline,
                                     }
@@ -221,10 +230,10 @@ class SongDetail extends React.Component {
                                 value={song.artist}
                                 onChange={this.handleChange('artist')}
                                 margin="normal"
-                                variant="outlined"
                             />
                             <TextField
-                                id="standard-required"
+                                required
+                                id="title"
                                 label="Title"
                                 value={song.title}
                                 className={classes.textField}
@@ -232,77 +241,179 @@ class SongDetail extends React.Component {
                                     className: classes.inputLabel
                                 }}
                                 InputProps={{
-                                    className: classes.input
+                                    classes: {
+                                        input: classes.input,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
                                 }}
+                                fullWidth={true}
                                 onChange={this.handleChange('title')}
                                 margin="normal"
                                 variant="outlined"
                             />
                             <TextField
                                 required
-                                id="standard-required"
+                                id="name"
                                 label="Name"
                                 value={song.name}
+                                className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
                                 InputProps={{
-                                    className: classes.input
+                                    classes: {
+                                        input: classes.input,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
                                 }}
+                                fullWidth={true}
                                 onChange={this.handleChange('name')}
                                 margin="normal"
                                 variant="outlined"
                             />
                             <TextField
-                                id="outlined-uncontrolled"
+                                id="youtube"
                                 label="Youtube"
                                 value={song.youtube}
+                                className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
                                 InputProps={{
-                                    className: classes.input
+                                    classes: {
+                                        input: classes.input,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
                                 }}
+                                fullWidth={true}
                                 onChange={this.handleChange('youtube')}
                                 margin="normal"
                                 variant="outlined"
                             />
                             <TextField
-                                id="standard-error"
+                                id="spotify"
                                 label="Spotify"
                                 value={song.spotify}
+                                className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
                                 InputProps={{
-                                    className: classes.input
+                                    classes: {
+                                        input: classes.input,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
                                 }}
+                                fullWidth={true}
                                 onChange={this.handleChange('spotify')}
                                 margin="normal"
+                                variant="outlined"
+                            />
+                            <TextField
+                                id="spotify"
+                                label="Spotify"
+                                value={song.spotify}
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
+                                InputProps={{
+                                    classes: {
+                                        input: classes.input,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
+                                }}
+                                fullWidth={true}
+                                onChange={this.handleChange('spotify')}
+                                margin="normal"
+                                variant="outlined"
+                            />
+                            <TextField
+                                id="wikimediaUrl"
+                                label="Wikimedia URL"
+                                value={song.spotify}
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
+                                InputProps={{
+                                    classes: {
+                                        input: classes.input,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
+                                }}
+                                fullWidth={true}
+                                onChange={this.handleChange('wikimediaUrl')}
+                                margin="normal"
+                                variant="outlined"
+                            />
+                            <TextField
+                                id="wikimediaAttribution"
+                                label="Wikimedia Attribution"
+                                value={song.spotify}
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
+                                InputProps={{
+                                    classes: {
+                                        input: classes.input,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
+                                }}
+                                fullWidth={true}
+                                onChange={this.handleChange('wikimediaAttribution')}
+                                margin="normal"
+                                variant="outlined"
+                            />
+                            <TextField
+                                id="flickrId"
+                                label="Flickr Photo Id"
+                                value={song.spotify}
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
+                                InputProps={{
+                                    classes: {
+                                        input: classes.input,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
+                                }}
+                                fullWidth={true}
+                                onChange={this.handleChange('flickrId')}
+                                margin="normal"
+                                variant="outlined"
+                            />
+                            <TextField
+                                id="background"
+                                label="Background"
+                                placeholder="Achtergrondinformatie over het nummer"
+                                multiline
+                                value={song.background}
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
+                                InputProps={{
+                                    classes: {
+                                        input: classes.multilineInput,
+                                        notchedOutline: classes.notchedOutline,
+                                    }
+                                }}
+                                fullWidth={true}
+                                onChange={this.handleChange('background')}
                                 variant="outlined"
                             />
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField
-                            id="filled-textarea"
-                            label="Background"
-                            placeholder="<Achtergrondinformatie over het nummer>"
-                            multiline
-                            value={song.background}
-                            InputLabelProps={{
-                                className: classes.inputLabel
-                            }}
-                            InputProps={{
-                                className: classes.input
-                            }}
-                            onChange={this.handleChange('background')}
-                            margin="normal"
-                            variant="outlined"
-                        />
+                        <div className="song-text-container">
+                            <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
+                        </div>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
+                    <Grid item xs={12}>
+                        Blabla en zo
                     </Grid>
                 </Grid>
             </div >
