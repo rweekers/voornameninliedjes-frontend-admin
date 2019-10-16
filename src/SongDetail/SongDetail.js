@@ -11,6 +11,9 @@ import TextField from '@material-ui/core/TextField';
 import ReactMarkdown from 'react-markdown';
 
 const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -184,7 +187,7 @@ class SongDetail extends React.Component {
         const photo = this.state.photo;
         const contribution = this.state.contribution;
         return (
-            <div className="Songdetail">
+            <div className={classes.root}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Typography variant="h5" gutterBottom>{song.artist} - {song.title}</Typography>
