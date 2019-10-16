@@ -33,6 +33,17 @@ const styles = theme => ({
         fontSize: 18,
         width: 600,
     },
+    underline: {
+      '&:before': {
+        borderBottomColor: colors.white,
+      },
+      '&:after': {
+        borderBottomColor: colors.white,
+      },
+      '&:hover:before': {
+        borderBottomColor: [colors.white, '!important'],
+      },
+    },
     dense: {
         marginTop: 19,
     },
@@ -201,7 +212,10 @@ class SongDetail extends React.Component {
                                     className: classes.inputLabel
                                 }}
                                 InputProps={{
-                                    className: classes.input
+                                    classes={
+                                        input: classes.input,
+                                        underline: classes.underline,
+                                    }
                                 }}
                                 fullWidth={true}
                                 value={song.artist}
