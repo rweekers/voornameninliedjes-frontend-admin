@@ -58,8 +58,6 @@ const styles = theme => ({
 
 const query$ = new BehaviorSubject({ query: 0 });
 
-let showPhoto = true;
-
 class SongDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -72,10 +70,7 @@ class SongDetail extends React.Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleArrayChange = this.handleArrayChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.addNewPhoto = this.addNewPhoto.bind(this);
-        this.addNewWikimediaPhoto = this.addNewWikimediaPhoto.bind(this);
     }
 
     handleChange = name => event => {
@@ -83,19 +78,18 @@ class SongDetail extends React.Component {
         this.setState({ song: { ...this.state.song, [name]: value } })
     };
 
-    handleArrayChange(event, index) {
-        const { name, value } = event.target;
+    handleFlickrChange(event) {
+        const { value } = event.target;
 
         const flickrPhotos = [...this.state.song.flickrPhotos];
-        flickrPhotos[index] = value;
-        this.setState({
-            song: { ...this.state.song, [name]: flickrPhotos }
-        });
+        flickrPhotos[0] = value;
 
-        query$.next({ "query": event.target, "index": index });
+        this.setState({
+            song: { ...this.state.song, 'flickrPhotos': flickrPhotos }
+        });
     }
 
-    handleWikimediaChange(event, index) {
+    handleWikimediaUrlChange(event) {
         const { value } = event.target;
 
         const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
@@ -104,10 +98,9 @@ class SongDetail extends React.Component {
         this.setState({
             song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos }
         });
-        console.log(this.state.song);
     }
 
-    handleWikimediaChange2(event, index) {
+    handleWikimediaAttributionChange(event) {
         const { value } = event.target;
 
         const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
@@ -116,32 +109,11 @@ class SongDetail extends React.Component {
         this.setState({
             song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos }
         });
-        console.log(this.state.song);
     }
 
     handleSubmit(event) {
         event.preventDefault();
         songService.updateSong(this.state.song, this.state.user);
-    }
-
-    addNewPhoto() {
-        let newPhoto = '';
-        const flickrPhotos = [...this.state.song.flickrPhotos];
-        flickrPhotos.push(newPhoto);
-        this.setState({
-            song: { ...this.state.song, 'flickrPhotos': flickrPhotos }
-        });
-    }
-
-    addNewWikimediaPhoto() {
-        let newPhoto = {};
-        newPhoto.url = '';
-        newPhoto.attribution = '';
-        const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
-        wikimediaPhotos.push(newPhoto);
-        this.setState({
-            song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos }
-        });
     }
 
     updateFlickr(event) {
@@ -155,15 +127,12 @@ class SongDetail extends React.Component {
         });
         let self = this;
         songService.getFlickrPhotoInfo(flickrPhotos[0]).then(photo => {
-            showPhoto = true;
             this.setState({
                 photo: photo,
                 contribution: photo.contribution
             });
         }).catch(function (error) {
-            showPhoto = false;
             self.setState({
-                photo: '',
                 contribution: ''
             });
         });
@@ -202,8 +171,10 @@ class SongDetail extends React.Component {
         const { classes } = this.props;
 
         const song = this.state.song;
-        const photo = this.state.photo;
-        const contribution = this.state.contribution;
+        const url = song.wikimediaPhotos.length > 0 ? song.wikimediaPhotos[0].url : '';
+        const attribution = song.wikimediaPhotos.length > 0 ? song.wikimediaPhotos[0].attribution : '';
+        const flickrId = song.flickrPhotos.length > 0 ? song.flickrPhotos[0] : '';
+
         return (
             <div className={classes.root}>
                 <Grid container spacing={3}>
@@ -310,28 +281,9 @@ class SongDetail extends React.Component {
                                 variant="outlined"
                             />
                             <TextField
-                                id="spotify"
-                                label="Spotify"
-                                value={song.spotify}
-                                className={classes.textField}
-                                InputLabelProps={{
-                                    className: classes.inputLabel
-                                }}
-                                InputProps={{
-                                    classes: {
-                                        input: classes.input,
-                                        notchedOutline: classes.notchedOutline,
-                                    }
-                                }}
-                                fullWidth={true}
-                                onChange={this.handleChange('spotify')}
-                                margin="normal"
-                                variant="outlined"
-                            />
-                            <TextField
                                 id="wikimediaUrl"
                                 label="Wikimedia URL"
-                                value={song.spotify}
+                                value={url}
                                 className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
@@ -343,14 +295,14 @@ class SongDetail extends React.Component {
                                     }
                                 }}
                                 fullWidth={true}
-                                onChange={this.handleChange('wikimediaUrl')}
+                                onChange={event => this.handleWikimediaUrlChange()}
                                 margin="normal"
                                 variant="outlined"
                             />
                             <TextField
                                 id="wikimediaAttribution"
                                 label="Wikimedia Attribution"
-                                value={song.spotify}
+                                value={attribution}
                                 className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
@@ -362,14 +314,14 @@ class SongDetail extends React.Component {
                                     }
                                 }}
                                 fullWidth={true}
-                                onChange={this.handleChange('wikimediaAttribution')}
+                                onChange={event => this.handleWikimediaAttributionChange()}
                                 margin="normal"
                                 variant="outlined"
                             />
                             <TextField
                                 id="flickrId"
                                 label="Flickr Photo Id"
-                                value={song.spotify}
+                                value={flickrId}
                                 className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
@@ -381,7 +333,7 @@ class SongDetail extends React.Component {
                                     }
                                 }}
                                 fullWidth={true}
-                                onChange={this.handleChange('flickrId')}
+                                onChange={event => this.handleFlickrChange(event)}
                                 margin="normal"
                                 variant="outlined"
                             />
@@ -410,6 +362,20 @@ class SongDetail extends React.Component {
                     <Grid item xs={12} sm={6}>
                         <div className="song-text-container">
                             <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
+                        </div>
+                        <div className="spotify">
+                            <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        </div>
+                        <div>
+                            <label>Photo</label>
+                            <img
+                                src={song.artistImage}
+                                alt={song.artist}
+                            />
+                        </div>
+                        <div>
+                            <label>YouTube:</label>
+                            <iframe src={`https://www.youtube.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
                         </div>
                     </Grid>
                     <Grid item xs={12}>
