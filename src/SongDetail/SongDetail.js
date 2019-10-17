@@ -93,6 +93,12 @@ class SongDetail extends React.Component {
         const { value } = event.target;
 
         const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
+        if (wikimediaPhotos.length === 0) {
+            const emptyWikimediaPhoto = {};
+            emptyWikimediaPhoto.url = '';
+            emptyWikimediaPhoto.attribution = '';
+            wikimediaPhotos.push(emptyWikimediaPhoto)
+        }
         wikimediaPhotos[0].url = value;
 
         this.setState({
@@ -104,6 +110,12 @@ class SongDetail extends React.Component {
         const { value } = event.target;
 
         const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
+        if (wikimediaPhotos.length === 0) {
+            const emptyWikimediaPhoto = {};
+            emptyWikimediaPhoto.url = '';
+            emptyWikimediaPhoto.attribution = '';
+            wikimediaPhotos.push(emptyWikimediaPhoto)
+        }
         wikimediaPhotos[0].attribution = value;
 
         this.setState({
@@ -114,6 +126,10 @@ class SongDetail extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         songService.updateSong(this.state.song, this.state.user);
+
+        songService.getSong(this.state.song.id).then(song => {
+            this.setState({ song });
+        });
     }
 
     updateFlickr(event) {
@@ -182,7 +198,7 @@ class SongDetail extends React.Component {
                         <Typography variant="h5" gutterBottom>{song.artist} - {song.title}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <form className={classes.container} noValidate autoComplete="off">
+                        <form className={classes.container} noValidate autoComplete="off" onSubmit={this.handleSubmit}>
                             <TextField
                                 required
                                 id="artist"
@@ -295,7 +311,7 @@ class SongDetail extends React.Component {
                                     }
                                 }}
                                 fullWidth={true}
-                                onChange={event => this.handleWikimediaUrlChange()}
+                                onChange={event => this.handleWikimediaUrlChange(event)}
                                 margin="normal"
                                 variant="outlined"
                             />
@@ -314,7 +330,7 @@ class SongDetail extends React.Component {
                                     }
                                 }}
                                 fullWidth={true}
-                                onChange={event => this.handleWikimediaAttributionChange()}
+                                onChange={event => this.handleWikimediaAttributionChange(event)}
                                 margin="normal"
                                 variant="outlined"
                             />
@@ -357,6 +373,7 @@ class SongDetail extends React.Component {
                                 onChange={this.handleChange('background')}
                                 variant="outlined"
                             />
+                            <input type="submit" value="Opslaan" />
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={6}>
