@@ -8,6 +8,7 @@ import { debounce } from 'rxjs/operators';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import ReactMarkdown from 'react-markdown';
 
 const styles = theme => ({
@@ -53,6 +54,9 @@ const styles = theme => ({
     notchedOutline: {
         borderWidth: "1px",
         borderColor: "lightgrey !important",
+    },
+    button: {
+      margin: 1,
     },
 });
 
@@ -373,6 +377,9 @@ class SongDetail extends React.Component {
                                 onChange={this.handleChange('background')}
                                 variant="outlined"
                             />
+                            <Button variant="contained" className={classes.button} type="submit">
+                                Opslaan
+                            </Button>
                             <input type="submit" value="Opslaan" />
                         </form>
                     </Grid>
