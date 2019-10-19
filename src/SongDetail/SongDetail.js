@@ -9,7 +9,12 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ReactMarkdown from 'react-markdown';
+import { red } from '@material-ui/core/colors';
 
 const styles = theme => ({
     root: {
@@ -34,7 +39,7 @@ const styles = theme => ({
     },
     multilineInput: {
         color: 'yellow',
-        // fontSize: 12,
+        fontSize: 12,
         marginTop: 19,
     },
     underline: {
@@ -56,7 +61,11 @@ const styles = theme => ({
         borderColor: "lightgrey !important",
     },
     button: {
-      margin: 1,
+        margin: 10,
+    },
+    expansionPanel: {
+        color: "white",
+        backgroundColor: "darkGray",
     },
 });
 
@@ -234,13 +243,12 @@ class SongDetail extends React.Component {
                                 InputProps={{
                                     classes: {
                                         input: classes.input,
-                                        notchedOutline: classes.notchedOutline,
+                                        underline: classes.underline,
                                     }
                                 }}
                                 fullWidth={true}
                                 onChange={this.handleChange('title')}
                                 margin="normal"
-                                variant="outlined"
                             />
                             <TextField
                                 required
@@ -254,13 +262,12 @@ class SongDetail extends React.Component {
                                 InputProps={{
                                     classes: {
                                         input: classes.input,
-                                        notchedOutline: classes.notchedOutline,
+                                        underline: classes.underline,
                                     }
                                 }}
                                 fullWidth={true}
                                 onChange={this.handleChange('name')}
                                 margin="normal"
-                                variant="outlined"
                             />
                             <TextField
                                 id="youtube"
@@ -273,13 +280,12 @@ class SongDetail extends React.Component {
                                 InputProps={{
                                     classes: {
                                         input: classes.input,
-                                        notchedOutline: classes.notchedOutline,
+                                        underline: classes.underline,
                                     }
                                 }}
                                 fullWidth={true}
                                 onChange={this.handleChange('youtube')}
                                 margin="normal"
-                                variant="outlined"
                             />
                             <TextField
                                 id="spotify"
@@ -292,13 +298,12 @@ class SongDetail extends React.Component {
                                 InputProps={{
                                     classes: {
                                         input: classes.input,
-                                        notchedOutline: classes.notchedOutline,
+                                        underline: classes.underline,
                                     }
                                 }}
                                 fullWidth={true}
                                 onChange={this.handleChange('spotify')}
                                 margin="normal"
-                                variant="outlined"
                             />
                             <TextField
                                 id="wikimediaUrl"
@@ -311,13 +316,12 @@ class SongDetail extends React.Component {
                                 InputProps={{
                                     classes: {
                                         input: classes.input,
-                                        notchedOutline: classes.notchedOutline,
+                                        underline: classes.underline,
                                     }
                                 }}
                                 fullWidth={true}
                                 onChange={event => this.handleWikimediaUrlChange(event)}
                                 margin="normal"
-                                variant="outlined"
                             />
                             <TextField
                                 id="wikimediaAttribution"
@@ -330,13 +334,12 @@ class SongDetail extends React.Component {
                                 InputProps={{
                                     classes: {
                                         input: classes.input,
-                                        notchedOutline: classes.notchedOutline,
+                                        underline: classes.underline,
                                     }
                                 }}
                                 fullWidth={true}
                                 onChange={event => this.handleWikimediaAttributionChange(event)}
                                 margin="normal"
-                                variant="outlined"
                             />
                             <TextField
                                 id="flickrId"
@@ -349,13 +352,12 @@ class SongDetail extends React.Component {
                                 InputProps={{
                                     classes: {
                                         input: classes.input,
-                                        notchedOutline: classes.notchedOutline,
+                                        underline: classes.underline,
                                     }
                                 }}
                                 fullWidth={true}
                                 onChange={event => this.handleFlickrChange(event)}
                                 margin="normal"
-                                variant="outlined"
                             />
                             <TextField
                                 id="background"
@@ -370,40 +372,70 @@ class SongDetail extends React.Component {
                                 InputProps={{
                                     classes: {
                                         input: classes.multilineInput,
-                                        notchedOutline: classes.notchedOutline,
+                                        underline: classes.underline,
                                     }
                                 }}
                                 fullWidth={true}
                                 onChange={this.handleChange('background')}
-                                variant="outlined"
                             />
-                            <Button variant="contained" className={classes.button} type="submit">
+                            <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit">
                                 Opslaan
                             </Button>
-                            <input type="submit" value="Opslaan" />
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <div className="song-text-container">
-                            <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
-                        </div>
-                        <div className="spotify">
-                            <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                        </div>
-                        <div>
-                            <label>Photo</label>
-                            <img
-                                src={song.artistImage}
-                                alt={song.artist}
-                            />
-                        </div>
-                        <div>
-                            <label>YouTube:</label>
-                            <iframe src={`https://www.youtube.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
-                        </div>
-                    </Grid>
-                    <Grid item xs={12}>
-                        Blabla en zo
+                        <ExpansionPanel className={classes.expansionPanel}>
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography className={classes.heading}>Geformatteerde achtergrond tekst</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <Typography>
+                                    <div className="song-text-container">
+                                        <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
+                                    </div>
+                                </Typography>
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                        <ExpansionPanel className={classes.expansionPanel}>
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography className={classes.heading}>YouTube en Spotify</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <div className="spotify">
+                                    <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                </div>
+                                <div>
+                                    <label>YouTube:</label>
+                                    <iframe src={`https://www.youtube.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
+                                </div>
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                        <ExpansionPanel className={classes.expansionPanel}>
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                            <Typography className={classes.heading}>Foto artiest</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <div>
+                                    <label>Photo</label>
+                                    <img
+                                        src={song.artistImage}
+                                        alt={song.artist}
+                                    />
+                                </div>
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
                     </Grid>
                 </Grid>
             </div >
