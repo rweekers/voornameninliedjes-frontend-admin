@@ -6,3 +6,24 @@ body {
 a {
     text-decoration: none;
 }
+
+#newSong{
+    width: 30%
+}
+
+#switchesWrapper {
+    text-align: center;
+}
+
+#switches {
+    display: inline-block;
+}
+
+#progressWrapper {
+    margin-top: 5%;
+    text-align: center;
+}
+
+#progress {
+    display: inline-block;
+}

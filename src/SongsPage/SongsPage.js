@@ -14,6 +14,7 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
     root: {
@@ -24,6 +25,9 @@ const styles = theme => ({
     },
     media: {
         height: 140,
+    },
+    progress: {
+        margin: 10,
     },
 });
 
@@ -62,35 +66,38 @@ class SongsPage extends React.Component {
             <div className={classes.root}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Typography variant="h5" gutterBottom>Nummers</Typography>
+                        <Typography variant="h4" gutterBottom>Nummers</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <FormGroup>
-                            <FormControlLabel
-                                control={
-                                    <Switch checked={this.state.filters.includes('SHOW')} onChange={this.handleChange('SHOW')} value="SHOW" color="primary" />
-                                }
-                                label="Actieve nummers"
-                                labelPlacement="start"
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Switch checked={this.state.filters.includes('IN_PROGRESS')} onChange={this.handleChange('IN_PROGRESS')} value="IN_PROGRESS" color="secondary" />
-                                }
-                                label="Nummers in bewerking"
-                                labelPlacement="start"
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Switch checked={this.state.filters.includes('TO_BE_DELETED')} onChange={this.handleChange('TO_BE_DELETED')} value="TO_BE_DELETED" color="secondary" />
-                                }
-                                label="Nummers te verwijderen"
-                                labelPlacement="start"
-                            /></FormGroup>
+                        <div id="switchesWrapper">
+                            <FormGroup id="switches">
+                                <FormControlLabel
+                                    control={
+                                        <Switch checked={this.state.filters.includes('SHOW')} onChange={this.handleChange('SHOW')} value="SHOW" color="primary" />
+                                    }
+                                    label="Actieve nummers"
+                                    labelPlacement="start"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch checked={this.state.filters.includes('IN_PROGRESS')} onChange={this.handleChange('IN_PROGRESS')} value="IN_PROGRESS" color="secondary" />
+                                    }
+                                    label="Nummers in bewerking"
+                                    labelPlacement="start"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch checked={this.state.filters.includes('TO_BE_DELETED')} onChange={this.handleChange('TO_BE_DELETED')} value="TO_BE_DELETED" color="secondary" />
+                                    }
+                                    label="Nummers te verwijderen"
+                                    labelPlacement="start"
+                                />
+                            </FormGroup>
+                        </div>
                     </Grid>
                     <Grid item xs={12}>
                         <Link key='new' to={'/songs/new'}>
-                            <Button variant="contained" color="primary">
+                            <Button id="newSong" variant="contained" color="primary">
                                 Nieuw nummer invoeren
                                 </Button>
                         </Link>
@@ -118,6 +125,13 @@ class SongsPage extends React.Component {
                             </Link>
                         </Grid>
                     )}
+                    {songs.length === 0 &&
+                        <Grid item xs={12}>
+                            <div id="progressWrapper">
+                                <CircularProgress id="progress" />
+                            </div>
+                        </Grid>
+                    }
                 </Grid>
             </div>
         )
