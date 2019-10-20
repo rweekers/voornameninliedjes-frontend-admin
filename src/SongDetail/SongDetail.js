@@ -12,9 +12,10 @@ import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ReactMarkdown from 'react-markdown';
-import { red } from '@material-ui/core/colors';
 
 const styles = theme => ({
     root: {
@@ -28,6 +29,14 @@ const styles = theme => ({
         marginLeft: 10,
         marginRight: 10,
     },
+    toggleButtons: {
+        backgroundColor: "#424242",
+        marginLeft: 10,
+        marginRight: 10,
+    },
+    toggleButtonText: {
+        color: 'white',
+    },
     inputLabel: {
         color: 'lightgrey !important',
         borderWidth: '1px',
@@ -38,9 +47,10 @@ const styles = theme => ({
         fontSize: 18,
     },
     multilineInput: {
-        color: 'yellow',
-        fontSize: 12,
-        marginTop: 19,
+        color: 'white',
+        fontSize: 18,
+        lineHeight: 1.5,
+        marginTop: 5,
     },
     underline: {
         '&:before': {
@@ -53,9 +63,6 @@ const styles = theme => ({
             borderBottomColor: ['lightgrey', '!important'],
         },
     },
-    dense: {
-        marginTop: 19,
-    },
     notchedOutline: {
         borderWidth: "1px",
         borderColor: "lightgrey !important",
@@ -64,8 +71,10 @@ const styles = theme => ({
         margin: 10,
     },
     expansionPanel: {
-        color: "white",
-        backgroundColor: "darkGray",
+        color: "lightgrey",
+        backgroundColor: "#424242",
+        marginLeft: 10,
+        marginRight: 10,
     },
 });
 
@@ -208,7 +217,7 @@ class SongDetail extends React.Component {
             <div className={classes.root}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Typography variant="h5" gutterBottom>{song.artist} - {song.title}</Typography>
+                        <Typography variant="h3" gutterBottom>{song.artist} - {song.title}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <form className={classes.container} noValidate autoComplete="off" onSubmit={this.handleSubmit}>
@@ -269,6 +278,17 @@ class SongDetail extends React.Component {
                                 onChange={this.handleChange('name')}
                                 margin="normal"
                             />
+                            <ToggleButtonGroup size="large" value={song.status} className={classes.toggleButtons} exclusive onChange={this.handleChange('status')}>
+                                <ToggleButton key={1} value="SHOW">
+                                    <Typography variant="subtitle1" className={classes.toggleButtonText} gutterBottom>Tonen</Typography>
+                                </ToggleButton>
+                                <ToggleButton key={2} value="IN_PROGRESS">
+                                    <Typography variant="subtitle1" className={classes.toggleButtonText} gutterBottom>Te bewerken</Typography>
+                                </ToggleButton>
+                                <ToggleButton key={3} value="TO_BE_DELETED">
+                                    <Typography variant="subtitle1" className={classes.toggleButtonText} gutterBottom>Te verwerken</Typography>
+                                </ToggleButton>
+                            </ToggleButtonGroup>
                             <TextField
                                 id="youtube"
                                 label="Youtube"
@@ -377,6 +397,7 @@ class SongDetail extends React.Component {
                                 }}
                                 fullWidth={true}
                                 onChange={this.handleChange('background')}
+                                margin="dense"
                             />
                             <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit">
                                 Opslaan
@@ -384,36 +405,33 @@ class SongDetail extends React.Component {
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <ExpansionPanel className={classes.expansionPanel}>
+                        <ExpansionPanel className={classes.expansionPanel} expanded={true}>
                             <ExpansionPanelSummary
                                 expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
+                                aria-controls="background-content"
+                                id="background-header"
                             >
-                                <Typography className={classes.heading}>Geformatteerde achtergrond tekst</Typography>
+                                <Typography variant="h5" gutterBottom>Geformatteerde achtergrond tekst</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
-                                <Typography>
-                                    <div className="song-text-container">
-                                        <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
-                                    </div>
-                                </Typography>
+                                <div className="song-text-container">
+                                    <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
+                                </div>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
                         <ExpansionPanel className={classes.expansionPanel}>
                             <ExpansionPanelSummary
                                 expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
+                                aria-controls="youtube-spotify-content"
+                                id="youtube-spotify-header"
                             >
-                                <Typography className={classes.heading}>YouTube en Spotify</Typography>
+                                <Typography variant="h5" gutterBottom>YouTube en Spotify</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <div className="spotify">
                                     <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                                 </div>
-                                <div>
-                                    <label>YouTube:</label>
+                                <div className="youtube">
                                     <iframe src={`https://www.youtube.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
                                 </div>
                             </ExpansionPanelDetails>
@@ -421,15 +439,14 @@ class SongDetail extends React.Component {
                         <ExpansionPanel className={classes.expansionPanel}>
                             <ExpansionPanelSummary
                                 expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
+                                aria-controls="image-content"
+                                id="image-header"
                             >
-                            <Typography className={classes.heading}>Foto artiest</Typography>
+                                <Typography variant="h5" gutterBottom>Foto artiest</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <div>
-                                    <label>Photo</label>
-                                    <img
+                                    <img className="artistImage"
                                         src={song.artistImage}
                                         alt={song.artist}
                                     />

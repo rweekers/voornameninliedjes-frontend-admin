@@ -1,7 +1,8 @@
-.song-text-container {
-    margin-top: 10%;
-}
-
 .song-text {
     color: whitesmoke;
+    font-size: 1.5em;
+}
+
+.artistImage {
+    max-width:100%;
 }
