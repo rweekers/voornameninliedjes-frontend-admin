@@ -128,7 +128,7 @@ class SongsPage extends React.Component {
                     {songs.length === 0 &&
                         <Grid item xs={12}>
                             <div id="progressWrapper">
-                                <CircularProgress id="progress" />
+                                <CircularProgress id="progress" size="6rem" thickness={4.5} />
                             </div>
                         </Grid>
                     }

@@ -98,13 +98,19 @@ class SongDetail extends React.Component {
     handleChange = name => event => {
         const value = event.target.value;
         this.setState({ song: { ...this.state.song, [name]: value } })
-    };
+    }
+
+    handleStatus = (event, newStatus) => {
+        this.setState({ song: { ...this.state.song, 'status': newStatus } })
+      };
 
     handleFlickrChange(event) {
         const { value } = event.target;
 
         const flickrPhotos = [...this.state.song.flickrPhotos];
         flickrPhotos[0] = value;
+
+        this.handlePictureUpdate(value);
 
         this.setState({
             song: { ...this.state.song, 'flickrPhotos': flickrPhotos }
@@ -122,6 +128,8 @@ class SongDetail extends React.Component {
             wikimediaPhotos.push(emptyWikimediaPhoto)
         }
         wikimediaPhotos[0].url = value;
+
+        this.handlePictureUpdate(value);
 
         this.setState({
             song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos }
@@ -148,10 +156,20 @@ class SongDetail extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         songService.updateSong(this.state.song, this.state.user);
+    }
 
-        songService.getSong(this.state.song.id).then(song => {
-            this.setState({ song });
-        });
+    handlePictureUpdate(pictureValue) {
+        if (this.state.song.wikimediaPhotos.length > 0) {
+            this.setState({ song: { ...this.state.song, 'artistImage': pictureValue } })
+        } else if (this.state.song.flickrPhotos.length > 0) {
+            songService.getFlickrPhotoInfo(pictureValue).then(photo => {
+                console.log(photo);
+                const flickrUrl = `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_c.jpg`
+                this.setState({ song: { ...this.state.song, 'artistImage': flickrUrl } });
+            }).catch(error => {
+                console.log('Unknown id ' + this.state.song.flickrPhotos[0]);
+            });
+        }
     }
 
     updateFlickr(event) {
@@ -278,7 +296,7 @@ class SongDetail extends React.Component {
                                 onChange={this.handleChange('name')}
                                 margin="normal"
                             />
-                            <ToggleButtonGroup size="large" value={song.status} className={classes.toggleButtons} exclusive onChange={this.handleChange('status')}>
+                            <ToggleButtonGroup size="large" value={song.status} className={classes.toggleButtons} exclusive onChange={this.handleStatus}>
                                 <ToggleButton key={1} value="SHOW">
                                     <Typography variant="subtitle1" className={classes.toggleButtonText} gutterBottom>Tonen</Typography>
                                 </ToggleButton>
@@ -286,7 +304,7 @@ class SongDetail extends React.Component {
                                     <Typography variant="subtitle1" className={classes.toggleButtonText} gutterBottom>Te bewerken</Typography>
                                 </ToggleButton>
                                 <ToggleButton key={3} value="TO_BE_DELETED">
-                                    <Typography variant="subtitle1" className={classes.toggleButtonText} gutterBottom>Te verwerken</Typography>
+                                    <Typography variant="subtitle1" className={classes.toggleButtonText} gutterBottom>Te verwijderen</Typography>
                                 </ToggleButton>
                             </ToggleButtonGroup>
                             <TextField
@@ -405,7 +423,7 @@ class SongDetail extends React.Component {
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <ExpansionPanel className={classes.expansionPanel} expanded={true}>
+                        <ExpansionPanel className={classes.expansionPanel} defaultExpanded={true}>
                             <ExpansionPanelSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="background-content"
