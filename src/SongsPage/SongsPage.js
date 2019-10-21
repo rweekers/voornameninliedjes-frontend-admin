@@ -21,10 +21,11 @@ const styles = theme => ({
         flexGrow: 1,
     },
     card: {
-        height: 300,
+        height: 400,
     },
     media: {
-        height: 140,
+        height: 280,
+        backgroundPosition: '0% 1%',
     },
     progress: {
         margin: 10,
