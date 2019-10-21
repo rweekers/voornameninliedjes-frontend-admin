@@ -15,6 +15,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MusicVideoIcon from '@material-ui/icons/MusicVideo';
 import ReactMarkdown from 'react-markdown';
 
 const styles = theme => ({
@@ -102,7 +103,7 @@ class SongDetail extends React.Component {
 
     handleStatus = (event, newStatus) => {
         this.setState({ song: { ...this.state.song, 'status': newStatus } })
-      };
+    };
 
     handleFlickrChange(event) {
         const { value } = event.target;
@@ -231,11 +232,13 @@ class SongDetail extends React.Component {
         const attribution = song.wikimediaPhotos.length > 0 ? song.wikimediaPhotos[0].attribution : '';
         const flickrId = song.flickrPhotos.length > 0 ? song.flickrPhotos[0] : '';
 
+        const songUrl = `https://voornameninliedjes.nl/song/${song.id}`
+
         return (
             <div className={classes.root}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Typography variant="h3" gutterBottom>{song.artist} - {song.title}</Typography>
+                        <Typography variant="h3" gutterBottom>{song.artist} - {song.title} <a href={songUrl} target="_blank"><MusicVideoIcon /></a></Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <form className={classes.container} noValidate autoComplete="off" onSubmit={this.handleSubmit}>
@@ -468,6 +471,20 @@ class SongDetail extends React.Component {
                                         src={song.artistImage}
                                         alt={song.artist}
                                     />
+                                </div>
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                        <ExpansionPanel className={classes.expansionPanel}>
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="preview-content"
+                                id="preview-header"
+                            >
+                                <Typography variant="h5" gutterBottom>Preview website</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <div class="preview-website-wrapper">
+                                    <iframe src={songUrl} class="preview-website" />
                                 </div>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
