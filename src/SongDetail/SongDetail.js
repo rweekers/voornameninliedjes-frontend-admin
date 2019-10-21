@@ -238,7 +238,7 @@ class SongDetail extends React.Component {
             <div className={classes.root}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Typography variant="h3" gutterBottom>{song.artist} - {song.title} <a href={songUrl} target="_blank"><MusicVideoIcon /></a></Typography>
+                        <Typography variant="h3" gutterBottom>{song.artist} - {song.title} <a href={songUrl} target="_blank" rel="noopener noreferrer"><MusicVideoIcon /></a></Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <form className={classes.container} noValidate autoComplete="off" onSubmit={this.handleSubmit}>
@@ -487,7 +487,7 @@ class SongDetail extends React.Component {
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <div class="preview-website-wrapper">
-                                    <iframe src={songUrl} class="preview-website" />
+                                    <iframe src={songUrl} title="preview-website" className="preview-website" />
                                 </div>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
