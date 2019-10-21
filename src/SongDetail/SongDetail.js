@@ -311,6 +311,7 @@ class SongDetail extends React.Component {
                                 </ToggleButton>
                             </ToggleButtonGroup>
                             <TextField
+                                required={song.status === 'SHOW'}
                                 id="youtube"
                                 label="Youtube"
                                 value={song.youtube}
@@ -329,6 +330,7 @@ class SongDetail extends React.Component {
                                 margin="normal"
                             />
                             <TextField
+                                required={song.status === 'SHOW'}
                                 id="spotify"
                                 label="Spotify"
                                 value={song.spotify}
@@ -401,6 +403,7 @@ class SongDetail extends React.Component {
                                 margin="normal"
                             />
                             <TextField
+                                required={song.status === 'SHOW'}
                                 id="background"
                                 label="Background"
                                 placeholder="Achtergrondinformatie over het nummer"
