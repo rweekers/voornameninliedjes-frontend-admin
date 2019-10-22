@@ -205,17 +205,27 @@ class SongDetail extends React.Component {
         });
         const songId = this.props.match.params.id;
 
-        songService.getSong(songId).then(song => {
-            this.setState({ song });
-            if (song.flickrPhotos.length > 0) {
-                songService.getFlickrPhotoInfo(song.flickrPhotos[0]).then(photo => {
-                    this.setState({
-                        photo: photo,
-                        contribution: photo.contribution
+        if (songId === 'new') {
+            const song = {
+                wikimediaPhotos: [],
+                flickrPhotos: [],
+                status: 'IN_PROGRESS',
+                artistImage: ''
+            };
+            this.setState({ song })
+        } else {
+            songService.getSong(songId).then(song => {
+                this.setState({ song });
+                if (song.flickrPhotos.length > 0) {
+                    songService.getFlickrPhotoInfo(song.flickrPhotos[0]).then(photo => {
+                        this.setState({
+                            photo: photo,
+                            contribution: photo.contribution
+                        });
                     });
-                });
-            }
-        });
+                }
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -238,7 +248,7 @@ class SongDetail extends React.Component {
             <div className={classes.root}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Typography variant="h3" gutterBottom>{song.artist} - {song.title} <a href={songUrl} target="_blank" rel="noopener noreferrer"><MusicVideoIcon /></a></Typography>
+                        <Typography variant="h3" gutterBottom>{song.artist} - {song.title} <a href={songUrl} target="_blank" rel="noopener noreferrer" hidden={!song.id}><MusicVideoIcon /></a></Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <form className={classes.container} noValidate autoComplete="off" onSubmit={this.handleSubmit}>
