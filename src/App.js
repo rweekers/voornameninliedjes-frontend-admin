@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { PrivateRoute } from './components/PrivateRoute';
 import { LoginPage } from './LoginPage/LoginPage';
 import { HomePage } from './HomePage/HomePage';
@@ -91,12 +91,14 @@ class App extends React.Component {
               <div className="login" hidden={!this.state.loggedIn}>
                 {loggedIn && user !== null && <div><Typography variant="subtitle1" gutterBottom>Ingelogd als {user.username} <Link to="/login"><Button className={classes.button}>Uitloggen</Button></Link></Typography></div>}
               </div>
-              <PrivateRoute exact path="/about" component={About} />
-              <PrivateRoute exact path="/songs" component={SongsPage} />
-              <PrivateRoute exact path="/" component={HomePage} />
-              <PrivateRoute exact path="/songs/:id" component={SongDetail} />
-              <PrivateRoute exact path="/songs/new" component={SongDetail} />
-              <Route path="/login" render={(props) => <LoginPage {...props} action={this.handleLogin} />} />
+              <Switch>
+                <PrivateRoute exact path="/about" component={About} />
+                <PrivateRoute exact path="/songs" component={SongsPage} />
+                <PrivateRoute exact path="/" component={HomePage} />
+                <PrivateRoute exact path="/songs/:id" component={SongDetail} />
+                <PrivateRoute exact path="/songs/new" component={SongDetail} />
+                <Route path="/login" render={(props) => <LoginPage {...props} action={this.handleLogin} />} />
+              </Switch>
             </div>
           </Router>
         </UserContext.Provider>
