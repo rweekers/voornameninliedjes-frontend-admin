@@ -245,7 +245,7 @@ class SongDetail extends React.Component {
         const songUrl = `https://voornameninliedjes.nl/song/${song.id}`
 
         return (
-            <div className={classes.root}>
+            <div className={classes.root} key={{song.artist}#{song.title}}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Typography variant="h3" gutterBottom>{song.artist} - {song.title} <a href={songUrl} target="_blank" rel="noopener noreferrer" hidden={!song.id}><MusicVideoIcon /></a></Typography>
