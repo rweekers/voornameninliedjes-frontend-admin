@@ -89,7 +89,8 @@ class SongDetail extends React.Component {
             song: { artist: '', title: '', name: '', spotify: '', youtube: '', background: '', flickrPhotos: [], wikimediaPhotos: [] },
             user: {},
             photo: '',
-            contribution: ''
+            contribution: '',
+            youTubeError: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -156,6 +157,14 @@ class SongDetail extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
+
+        const song = this.state.song;
+
+        if (!song.youtube) {
+            this.setState({ 'youTubeError': 'YouTube link moet gevuld zijn' });
+            return;
+        }
+
         songService.updateSong(this.state.song, this.state.user);
     }
 
@@ -244,8 +253,10 @@ class SongDetail extends React.Component {
 
         const songUrl = `https://voornameninliedjes.nl/song/${song.id}`
 
+        const key = `song.artist#song.title`;
+
         return (
-            <div className={classes.root} key={{song.artist}#{song.title}}>
+            <div className={classes.root} key={key}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Typography variant="h3" gutterBottom>{song.artist} - {song.title} <a href={songUrl} target="_blank" rel="noopener noreferrer" hidden={!song.id}><MusicVideoIcon /></a></Typography>
@@ -326,6 +337,8 @@ class SongDetail extends React.Component {
                                 label="Youtube"
                                 value={song.youtube}
                                 className={classes.textField}
+                                error={this.state.youTubeError}
+                                helperText={this.state.youTubeError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
