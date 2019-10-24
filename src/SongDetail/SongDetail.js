@@ -253,7 +253,7 @@ class SongDetail extends React.Component {
 
         const songUrl = `https://voornameninliedjes.nl/song/${song.id}`
 
-        const key = `song.artist#song.title`;
+        const key = `${song.artist}#${song.title}`;
 
         return (
             <div className={classes.root} key={key}>
