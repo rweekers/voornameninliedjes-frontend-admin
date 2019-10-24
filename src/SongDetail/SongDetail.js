@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { songService } from '../services/song.service';
 import './SongDetail.css';
 import { withStyles } from '@material-ui/styles';
-import { BehaviorSubject, timer } from 'rxjs';
-import { debounce } from 'rxjs/operators';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField';
@@ -79,8 +77,6 @@ const styles = theme => ({
     },
 });
 
-const query$ = new BehaviorSubject({ query: 0 });
-
 class SongDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -90,7 +86,8 @@ class SongDetail extends React.Component {
             user: {},
             photo: '',
             contribution: '',
-            youTubeError: ''
+            youTubeError: '',
+            licenseError: '',
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -122,6 +119,13 @@ class SongDetail extends React.Component {
     handleWikimediaUrlChange(event) {
         const { value } = event.target;
 
+        if (!value) {
+            // picture is empty, check if flickr needs updating
+            if (this.state.song.flickrPhotos.length > 0) {
+                this.handlePictureUpdate(this.state.song.flickrPhotos[0]);
+            }
+        }
+
         const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
         if (wikimediaPhotos.length === 0) {
             const emptyWikimediaPhoto = {};
@@ -131,10 +135,8 @@ class SongDetail extends React.Component {
         }
         wikimediaPhotos[0].url = value;
 
-        this.handlePictureUpdate(value);
-
         this.setState({
-            song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos }
+            song: { ...this.state.song, 'wikimediaPhotos': wikimediaPhotos, 'artistImage': value },
         });
     }
 
@@ -160,55 +162,44 @@ class SongDetail extends React.Component {
 
         const song = this.state.song;
 
-        if (!song.youtube) {
+        if (song.status === 'SHOW' && !song.youtube) {
             this.setState({ 'youTubeError': 'YouTube link moet gevuld zijn' });
             return;
         }
 
+        // check empty arrays!!
+
+        songService.getFlickrPhotoInfo(song.flickrPhotos[0]).then(photo => {
+            console.log(photo.contribution);
+        }).catch(function (error) {
+            console.log('Something went wrong ' + error);
+        });
+
         songService.updateSong(this.state.song, this.state.user);
+
+        this.context.router.push('/about');
     }
 
     handlePictureUpdate(pictureValue) {
-        if (this.state.song.wikimediaPhotos.length > 0) {
-            this.setState({ song: { ...this.state.song, 'artistImage': pictureValue } })
-        } else if (this.state.song.flickrPhotos.length > 0) {
+        // See https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.html
+        const validLicenses = ['1', '2', '3', '4', '5', '6', '7'];
+
+        if (this.state.song.flickrPhotos.length > 0) {
             songService.getFlickrPhotoInfo(pictureValue).then(photo => {
-                console.log(photo);
+                console.log(photo.license);
+                if (!validLicenses.includes(photo.license)) {
+                    this.setState({ 'licenseError': 'Deze foto mag niet rechtenvrij gebruikt worden' });
+                }
                 const flickrUrl = `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_c.jpg`
                 this.setState({ song: { ...this.state.song, 'artistImage': flickrUrl } });
             }).catch(error => {
                 console.log('Unknown id ' + this.state.song.flickrPhotos[0]);
+                this.setState({ song: { ...this.state.song, 'artistImage': '' } });
             });
         }
     }
 
-    updateFlickr(event) {
-        const { name, value } = event.query;
-        const index = event.index;
-
-        const flickrPhotos = [...this.state.song.flickrPhotos];
-        flickrPhotos[index] = value;
-        this.setState({
-            song: { ...this.state.song, [name]: flickrPhotos }
-        });
-        let self = this;
-        songService.getFlickrPhotoInfo(flickrPhotos[0]).then(photo => {
-            this.setState({
-                photo: photo,
-                contribution: photo.contribution
-            });
-        }).catch(function (error) {
-            self.setState({
-                contribution: ''
-            });
-        });
-    }
-
     componentDidMount() {
-        const obs = query$.asObservable();
-        const dobs = obs.pipe(debounce(() => timer(500)));
-        this.subscription = dobs.subscribe(event => this.updateFlickr(event));
-
         this.setState({
             user: JSON.parse(localStorage.getItem('user')),
         });
@@ -234,12 +225,6 @@ class SongDetail extends React.Component {
                     });
                 }
             });
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.subscription !== null) {
-            this.subscription.unsubscribe();
         }
     }
 
@@ -412,6 +397,8 @@ class SongDetail extends React.Component {
                                 label="Flickr Photo Id"
                                 value={flickrId}
                                 className={classes.textField}
+                                error={this.state.licenseError}
+                                helperText={this.state.licenseError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
@@ -493,10 +480,11 @@ class SongDetail extends React.Component {
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <div>
-                                    <img className="artistImage"
-                                        src={song.artistImage}
-                                        alt={song.artist}
-                                    />
+                                    {song.artistImage &&
+                                        <img className="artistImage"
+                                            src={song.artistImage}
+                                            alt={song.artist}
+                                        />}
                                 </div>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
