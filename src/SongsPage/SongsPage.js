@@ -32,21 +32,26 @@ const styles = theme => ({
     },
 });
 
+const InitialState = {
+    songs: [],
+    filters: ['SHOW']
+}
+
 class SongsPage extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            songs: [],
-            filters: ['SHOW']
-        };
-    }
+        // Retrieve the last state
+        this.state = localStorage.getItem("appState") ? JSON.parse(localStorage.getItem("appState")) : InitialState;
 
-    componentDidMount() {
         songService.getDone().then(songs => {
             this.setState({ songs })
-        }
-        );
+        });
+    }
+
+    componentWillUnmount() {
+        // Remember state for the next mount
+        localStorage.setItem('appState', JSON.stringify(this.state));
     }
 
     handleChange = name => event => {

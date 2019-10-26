@@ -11,7 +11,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import SearchAppBar from './material-coponents/SearchAppBar'
+import SearchAppBar from './material-coponents/SearchAppBar';
+import { createBrowserHistory as createHistory } from 'history';
 import './App.css';
 
 const styles = theme => ({
@@ -112,5 +113,7 @@ App.contextType = UserContext;
 App.propTypes = {
   classes: PropTypes.object.isRequired,
 };
+
+export const history = createHistory();
 
 export default withStyles(styles)(App);

@@ -15,6 +15,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MusicVideoIcon from '@material-ui/icons/MusicVideo';
 import ReactMarkdown from 'react-markdown';
+import { history } from './../App';
 
 const styles = theme => ({
     root: {
@@ -87,6 +88,8 @@ class SongDetail extends React.Component {
             photo: '',
             contribution: '',
             youTubeError: '',
+            spotifyError: '',
+            backgroundError: '',
             licenseError: '',
             wikiMediaError: '',
         };
@@ -96,15 +99,21 @@ class SongDetail extends React.Component {
     }
 
     handleChange = name => event => {
+        this.clearValidations();
+
         const value = event.target.value;
         this.setState({ song: { ...this.state.song, [name]: value } })
     }
 
     handleStatus = (event, newStatus) => {
+        this.clearValidations();
+
         this.setState({ song: { ...this.state.song, 'status': newStatus } })
     };
 
     handleFlickrChange(event) {
+        this.clearValidations();
+
         const { value } = event.target;
 
         const flickrPhotos = [...this.state.song.flickrPhotos];
@@ -122,6 +131,8 @@ class SongDetail extends React.Component {
     }
 
     handleWikimediaUrlChange(event) {
+        this.clearValidations();
+
         const { value } = event.target;
 
         if (!value) {
@@ -146,6 +157,8 @@ class SongDetail extends React.Component {
     }
 
     handleWikimediaAttributionChange(event) {
+        this.clearValidations();
+
         const { value } = event.target;
 
         const wikimediaPhotos = [...this.state.song.wikimediaPhotos];
@@ -173,12 +186,21 @@ class SongDetail extends React.Component {
 
         songService.updateSong(this.state.song, this.state.user);
 
-        // check routing from code
-        // this.context.router.push('/about');
+        history.push('/about');
     }
 
     isEmpty(str) {
         return (!str || 0 === str.length);
+    }
+
+    clearValidations() {
+        this.setState({
+            'youTubeError': '',
+            'spotifyError': '',
+            'backgroundError': '',
+            'licenseError': '',
+            'wikiMediaError': '',
+        });
     }
 
     isValid(song) {
@@ -189,18 +211,27 @@ class SongDetail extends React.Component {
             isValid = false;
         }
 
+        if (song.status === 'SHOW' && !song.spotify) {
+            this.setState({ 'spotifyError': 'Spotify Id moet gevuld zijn' });
+            isValid = false;
+        }
+
+        if (song.status === 'SHOW' && !song.background) {
+            this.setState({ 'backgroundError': 'Achtergrond moet gevuld zijn' });
+            isValid = false;
+        }
+
         if (song.wikimediaPhotos.length > 0) {
             const wikimediaPhoto = song.wikimediaPhotos[0];
             if (this.isEmpty(wikimediaPhoto.url) && this.isEmpty(wikimediaPhoto.attribution)) {
                 song.wikimediaPhotos.pop();
             }
-            if (this.isEmpty(wikimediaPhoto.url) && !this.isEmpty(wikimediaPhoto.attribution)) {
+            if ((this.isEmpty(wikimediaPhoto.url) && !this.isEmpty(wikimediaPhoto.attribution)) ||
+                (!this.isEmpty(wikimediaPhoto.url) && this.isEmpty(wikimediaPhoto.attribution))) {
                 this.setState({ 'wikiMediaError': 'Zowel url als attribution moeten gevuld zijn' });
                 isValid = false;
             }
         }
-
-        // check empty arrays!!
         return isValid;
 
     }
@@ -360,6 +391,8 @@ class SongDetail extends React.Component {
                                 label="Spotify"
                                 value={song.spotify}
                                 className={classes.textField}
+                                error={!this.isEmpty(this.state.spotifyError)}
+                                helperText={this.state.spotifyError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
@@ -441,6 +474,8 @@ class SongDetail extends React.Component {
                                 multiline
                                 value={song.background}
                                 className={classes.textField}
+                                error={!this.isEmpty(this.state.backgroundError)}
+                                helperText={this.state.backgroundError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
