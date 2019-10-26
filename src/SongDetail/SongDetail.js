@@ -88,6 +88,7 @@ class SongDetail extends React.Component {
             contribution: '',
             youTubeError: '',
             licenseError: '',
+            wikiMediaError: '',
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -162,22 +163,41 @@ class SongDetail extends React.Component {
 
         const song = this.state.song;
 
-        if (song.status === 'SHOW' && !song.youtube) {
-            this.setState({ 'youTubeError': 'YouTube link moet gevuld zijn' });
+        if (!this.isValid(song)) {
             return;
         }
-
-        // check empty arrays!!
-
-        songService.getFlickrPhotoInfo(song.flickrPhotos[0]).then(photo => {
-            console.log(photo.contribution);
-        }).catch(function (error) {
-            console.log('Something went wrong ' + error);
-        });
 
         songService.updateSong(this.state.song, this.state.user);
 
         this.context.router.push('/about');
+    }
+
+    isEmpty(str) {
+        return (!str || 0 === str.length);
+    }
+
+    isValid(song) {
+        let isValid = true;
+
+        if (song.status === 'SHOW' && !song.youtube) {
+            this.setState({ 'youTubeError': 'YouTube link moet gevuld zijn' });
+            isValid = false;
+        }
+
+        if (song.wikimediaPhotos.length > 0) {
+            const wikimediaPhoto = song.wikimediaPhotos[0];
+            if (this.isEmpty(wikimediaPhoto.url) && this.isEmpty(wikimediaPhoto.attribution)) {
+                song.wikimediaPhotos.pop();
+            }
+            if (this.isEmpty(wikimediaPhoto.url) && !this.isEmpty(wikimediaPhoto.attribution)) {
+                this.setState({ 'wikiMediaError': 'Zowel url als attribution moeten gevuld zijn' });
+                isValid = false;
+            }
+        }
+
+        // check empty arrays!!
+        return isValid;
+
     }
 
     handlePictureUpdate(pictureValue) {
@@ -322,7 +342,7 @@ class SongDetail extends React.Component {
                                 label="Youtube"
                                 value={song.youtube}
                                 className={classes.textField}
-                                error={this.state.youTubeError}
+                                error={!this.isEmpty(this.state.youTubeError)}
                                 helperText={this.state.youTubeError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
@@ -361,6 +381,8 @@ class SongDetail extends React.Component {
                                 label="Wikimedia URL"
                                 value={url}
                                 className={classes.textField}
+                                error={!this.isEmpty(this.state.wikiMediaError)}
+                                helperText={this.state.wikiMediaError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
@@ -379,6 +401,8 @@ class SongDetail extends React.Component {
                                 label="Wikimedia Attribution"
                                 value={attribution}
                                 className={classes.textField}
+                                error={!this.isEmpty(this.state.wikiMediaError)}
+                                helperText={this.state.wikiMediaError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
@@ -397,7 +421,7 @@ class SongDetail extends React.Component {
                                 label="Flickr Photo Id"
                                 value={flickrId}
                                 className={classes.textField}
-                                error={this.state.licenseError}
+                                error={!this.isEmpty(this.state.licenseError)}
                                 helperText={this.state.licenseError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
@@ -497,7 +521,7 @@ class SongDetail extends React.Component {
                                 <Typography variant="h5" gutterBottom>Preview website</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
-                                <div class="preview-website-wrapper">
+                                <div className="preview-website-wrapper">
                                     <iframe src={songUrl} title="preview-website" className="preview-website" />
                                 </div>
                             </ExpansionPanelDetails>
