@@ -110,6 +110,10 @@ class SongDetail extends React.Component {
         const flickrPhotos = [...this.state.song.flickrPhotos];
         flickrPhotos[0] = value;
 
+        if (!value) {
+            flickrPhotos.pop();
+        }
+
         this.handlePictureUpdate(value);
 
         this.setState({
@@ -169,7 +173,8 @@ class SongDetail extends React.Component {
 
         songService.updateSong(this.state.song, this.state.user);
 
-        this.context.router.push('/about');
+        // check routing from code
+        // this.context.router.push('/about');
     }
 
     isEmpty(str) {
@@ -236,14 +241,6 @@ class SongDetail extends React.Component {
         } else {
             songService.getSong(songId).then(song => {
                 this.setState({ song });
-                if (song.flickrPhotos.length > 0) {
-                    songService.getFlickrPhotoInfo(song.flickrPhotos[0]).then(photo => {
-                        this.setState({
-                            photo: photo,
-                            contribution: photo.contribution
-                        });
-                    });
-                }
             });
         }
     }
