@@ -7,9 +7,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import './SongsPage.css';
 import { withStyles } from '@material-ui/styles';
-import FormGroup from '@material-ui/core/FormGroup';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
@@ -17,6 +17,10 @@ const styles = theme => ({
         flexGrow: 1,
     },
 });
+
+const SONGS_TO_SHOW = "SHOW";
+const SONGS_IN_PROGRESS = "IN_PROGRESS";
+const SONGS_TO_BE_DELETED = "TO_BE_DELETED";
 
 const InitialState = {
     songs: [],
@@ -34,9 +38,9 @@ class SongsPage extends React.Component {
         this.state = localStorage.getItem("appState") ? JSON.parse(localStorage.getItem("appState")) : InitialState;
 
         songService.getDone().then(songs => {
-            const songsToShow = songs.filter(song => "SHOW".includes(song.status));
-            const songsInProgress = songs.filter(song => "IN_PROGRESS".includes(song.status));
-            const songsToBeDeleted = songs.filter(song => "TO_BE_DELETED".includes(song.status));
+            const songsToShow = songs.filter(song => SONGS_TO_SHOW.includes(song.status));
+            const songsInProgress = songs.filter(song => SONGS_IN_PROGRESS.includes(song.status));
+            const songsToBeDeleted = songs.filter(song => SONGS_TO_BE_DELETED.includes(song.status));
 
             this.setState({
                 'songsToShow': songsToShow,
@@ -47,7 +51,7 @@ class SongsPage extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ 'filter': 'SHOW' });
+        this.setState({ 'filter': SONGS_TO_SHOW });
     }
 
     componentWillUnmount() {
@@ -72,29 +76,29 @@ class SongsPage extends React.Component {
                     </Grid>
                     <Grid item xs={12}>
                         <div id="switchesWrapper">
-                            <FormGroup id="switches">
+                            <RadioGroup id="switches">
                                 <FormControlLabel
                                     control={
-                                        <Switch checked={this.state.filter === 'SHOW'} onChange={this.handleChange('SHOW')} value="SHOW" color="primary" />
+                                        <Radio checked={this.state.filter === SONGS_TO_SHOW} onChange={this.handleChange(SONGS_TO_SHOW)} value={SONGS_TO_SHOW} color="primary" />
                                     }
                                     label="Actieve nummers"
                                     labelPlacement="start"
                                 />
                                 <FormControlLabel
                                     control={
-                                        <Switch checked={this.state.filter === 'IN_PROGRESS'} onChange={this.handleChange('IN_PROGRESS')} value="IN_PROGRESS" color="secondary" />
+                                        <Radio checked={this.state.filter === SONGS_IN_PROGRESS} onChange={this.handleChange(SONGS_IN_PROGRESS)} value={SONGS_IN_PROGRESS} color="primary" />
                                     }
                                     label="Nummers in bewerking"
                                     labelPlacement="start"
                                 />
                                 <FormControlLabel
                                     control={
-                                        <Switch checked={this.state.filter === 'TO_BE_DELETED'} onChange={this.handleChange('TO_BE_DELETED')} value="TO_BE_DELETED" color="secondary" />
+                                        <Radio checked={this.state.filter === SONGS_TO_BE_DELETED} onChange={this.handleChange(SONGS_TO_BE_DELETED)} value={SONGS_TO_BE_DELETED} color="primary" />
                                     }
                                     label="Nummers te verwijderen"
                                     labelPlacement="start"
                                 />
-                            </FormGroup>
+                            </RadioGroup>
                         </div>
                     </Grid>
                     <Grid item xs={12}>
