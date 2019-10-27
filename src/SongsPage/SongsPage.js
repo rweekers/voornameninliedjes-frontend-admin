@@ -45,13 +45,15 @@ class SongsPage extends React.Component {
             this.setState({
                 'songsToShow': songsToShow,
                 'songsInProgress': songsInProgress,
-                'songsToBeDeleted': songsToBeDeleted
+                'songsToBeDeleted': songsToBeDeleted,
             })
         });
     }
 
     componentDidMount() {
-        this.setState({ 'filter': SONGS_TO_SHOW });
+        this.setState({
+            'filter': SONGS_TO_SHOW,
+        });
     }
 
     componentWillUnmount() {

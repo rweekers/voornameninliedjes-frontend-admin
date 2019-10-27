@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles';
 import { Link } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -8,9 +10,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import './SongsList.css';
-import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles({
+const styles = theme => ({
     root: {
         flexGrow: 1,
         marginLeft: 10,
@@ -28,42 +29,73 @@ const useStyles = makeStyles({
     },
 });
 
-export default function SongsList(props) {
-    const classes = useStyles();
+const INITIAL_CAP_SIZE = 30;
 
-    return <div className={classes.root}>
-        <Grid container spacing={3}>
-            {props.songs.length > 0 && props.songs.map((song, index) =>
-                <Grid key={song.id} item xs={12} sm={6} md={4} lg={3}>
-                    <Link key={song.id} to={'/songs/' + song.id}>
-                        <Card className={classes.card}>
-                            <CardActionArea>
-                                <CardMedia
-                                    className={classes.media}
-                                    image={song.artistImage}
-                                    title={song.artist}
-                                />
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {song.artist} - {song.title}
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary" component="p">
-                                        {song.background}
-                                    </Typography>
-                                </CardContent>
-                            </CardActionArea>
-                        </Card>
-                    </Link>
-                </Grid>
-            )}
-            {props.songs.length === 0 &&
-                <Grid item xs={12}>
-                    <div id="progressWrapper">
-                        <CircularProgress id="progress" size="6rem" thickness={4.5} />
-                    </div>
-                </Grid>
-            }
-        </Grid>
-    </div>
+class SongsList extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            songs: [],
+         }
+    }
+
+    componentDidMount() {
+        const songs = this.props.songs.length > INITIAL_CAP_SIZE ? this.props.songs.slice(0, INITIAL_CAP_SIZE) : this.props.songs;
+
+        this.setState({
+            'songs': songs,
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            'songs': this.props.songs,
+        });
+    }
+
+    render() {
+        const { classes } = this.props;
+
+        return <div className={classes.root}>
+            <Grid container spacing={3}>
+                {this.state.songs && this.state.songs.length > 0 && this.state.songs.map((song, index) =>
+                    <Grid key={song.id} item xs={12} sm={6} md={4} lg={3}>
+                        <Link key={song.id} to={'/songs/' + song.id}>
+                            <Card className={classes.card}>
+                                <CardActionArea>
+                                    <CardMedia
+                                        className={classes.media}
+                                        image={song.artistImage}
+                                        title={song.artist}
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            {song.artist} - {song.title}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary" component="p">
+                                            {song.background}
+                                        </Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Card>
+                        </Link>
+                    </Grid>
+                )}
+                {this.state.songs && this.state.songs.length === 0 &&
+                    <Grid item xs={12}>
+                        <div id="progressWrapper">
+                            <CircularProgress id="progress" size="6rem" thickness={4.5} />
+                        </div>
+                    </Grid>
+                }
+            </Grid>
+        </div>
+    }
 }
 
+SongsList.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(SongsList);

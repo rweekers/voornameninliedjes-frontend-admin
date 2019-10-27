@@ -186,7 +186,7 @@ class SongDetail extends React.Component {
 
         songService.updateSong(this.state.song, this.state.user);
 
-        history.push('/about');
+        // history.push('/about');
     }
 
     isEmpty(str) {
