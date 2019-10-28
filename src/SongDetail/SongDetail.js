@@ -186,7 +186,8 @@ class SongDetail extends React.Component {
 
         songService.updateSong(this.state.song, this.state.user);
 
-        // history.push('/about');
+        // Add snackbar as feedback element
+        this.props.history.push('/about');
     }
 
     isEmpty(str) {
