@@ -15,7 +15,8 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MusicVideoIcon from '@material-ui/icons/MusicVideo';
 import ReactMarkdown from 'react-markdown';
-import { history } from './../App';
+import Snackbar from '@material-ui/core/Snackbar';
+import Fade from '@material-ui/core/Fade';
 
 const styles = theme => ({
     root: {
@@ -92,10 +93,13 @@ class SongDetail extends React.Component {
             backgroundError: '',
             licenseError: '',
             wikiMediaError: '',
+            open: false,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     handleChange = name => event => {
@@ -186,8 +190,12 @@ class SongDetail extends React.Component {
 
         songService.updateSong(this.state.song, this.state.user);
 
+        // Add insert song (and return id) to navigate to page when inserting
         // Add snackbar as feedback element
-        this.props.history.push('/about');
+
+        this.handleClick();
+
+        // this.props.history.push('/about');
     }
 
     isEmpty(str) {
@@ -254,6 +262,18 @@ class SongDetail extends React.Component {
                 this.setState({ song: { ...this.state.song, 'artistImage': '' } });
             });
         }
+    }
+
+    handleClick() {
+        this.setState({
+            open: true,
+        });
+    }
+
+    handleClose() {
+        this.setState({
+            open: false,
+        });
     }
 
     componentDidMount() {
@@ -493,6 +513,17 @@ class SongDetail extends React.Component {
                             <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit">
                                 Opslaan
                             </Button>
+                            <Snackbar
+                                open={this.state.open}
+                                onClose={this.handleClose}
+                                onClick={this.handleClose}
+                                autoHideDuration={3000}
+                                TransitionComponent={Fade}
+                                ContentProps={{
+                                    'aria-describedby': 'message-id',
+                                }}
+                                message={<span id="message-id">Nummer succesvol geupdatet</span>}
+                            />
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={6}>
