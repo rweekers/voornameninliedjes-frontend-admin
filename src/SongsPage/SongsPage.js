@@ -11,6 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
+import CustomSnackBar from '../material-components/CustomSnackBar';
 
 const styles = theme => ({
     root: {
@@ -43,17 +44,24 @@ class SongsPage extends React.Component {
             const songsToBeDeleted = songs.filter(song => SONGS_TO_BE_DELETED.includes(song.status));
 
             this.setState({
+                'filter': this.state.filter ? this.state.filter : 'SONGS_TO_SHOW',
                 'songsToShow': songsToShow,
                 'songsInProgress': songsInProgress,
                 'songsToBeDeleted': songsToBeDeleted,
+                open: false,
+                messageType: '',
+                messageText: '',
             })
         });
+
+        this.handleClick = this.handleClick.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     componentDidMount() {
-        this.setState({
-            'filter': SONGS_TO_SHOW,
-        });
+        if (this.props.location.messageType) {
+            this.handleClick(this.props.location.messageType, this.props.location.messageText);
+        }
     }
 
     componentWillUnmount() {
@@ -66,12 +74,28 @@ class SongsPage extends React.Component {
         this.setState({ filter: filterValue });
     };
 
+    handleClick(messageType, messageText) {
+        this.setState({
+            open: true,
+            messageType: messageType,
+            messageText: messageText,
+        });
+    }
+
+    handleClose() {
+        this.setState({
+            open: false,
+            messageType: '',
+            messageText: '',
+        });
+    }
+
     render() {
         const { songsToShow, songsInProgress, songsToBeDeleted } = this.state;
         const { classes } = this.props;
 
         return (
-            <div className={classes.root}>
+            <div className={classes.root} key="songsPage">
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Typography variant="h4" gutterBottom>Nummers</Typography>
@@ -110,6 +134,12 @@ class SongsPage extends React.Component {
                                 </Button>
                         </Link>
                     </Grid>
+                    <CustomSnackBar
+                        handleClose={this.handleClose}
+                        open={this.state.open}
+                        messageText={this.state.messageText}
+                        variant={this.state.messageType}
+                    />
                 </Grid>
                 {this.state.filter === 'SHOW' &&
                     <SongsList songs={songsToShow} />

@@ -7,6 +7,8 @@ export const songService = {
     getToDo,
     getSong,
     updateSong,
+    insertSong,
+    removeSong,
     getFlickrPhotoInfo
 };
 
@@ -84,6 +86,24 @@ function updateSong(song, user) {
     const id = song.id;
     const username = user.username;
     return fetch(`${apiUrl}/songs/${username}/${id}`, requestOptions).then(handleResponse);
+}
+
+function insertSong(song, user) {
+    const requestOptions = {
+        method: 'POST',
+        body: JSON.stringify(song),
+        headers: authHeader()
+    };
+    const username = user.username;
+    return fetch(`${apiUrl}/songs/${username}`, requestOptions).then(handleResponse);
+}
+
+function removeSong(songId) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: authHeader()
+    };
+    return fetch(`${apiUrl}/songs/${songId}`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {

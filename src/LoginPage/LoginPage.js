@@ -1,7 +1,58 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './LoginPage.css';
+import { withStyles } from '@material-ui/styles';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid'
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import { userService } from '../services/user.service';
 import { UserContext } from '../user-context';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    textField: {
+        marginLeft: '20%',
+        marginRight: '20%',
+    },
+    inputLabel: {
+        color: 'lightgrey !important',
+        borderWidth: '1px',
+        fontSize: 18,
+    },
+    input: {
+        color: 'white',
+        fontSize: 18,
+    },
+    underline: {
+        '&:before': {
+            borderBottomColor: 'lightgrey',
+        },
+        '&:after': {
+            borderBottomColor: 'lightgrey',
+        },
+        '&:hover:before': {
+            borderBottomColor: ['lightgrey', '!important'],
+        },
+    },
+    button: {
+        marginTop: '2%',
+        marginLeft: '20%',
+        marginRight: '20%',
+    },
+    error: {
+        fontSize: 15,
+    },
+    loginError: {
+        marginTop: '2%',
+    },
+});
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -13,8 +64,7 @@ class LoginPage extends React.Component {
             username: '',
             password: '',
             submitted: false,
-            loading: false,
-            error: ''
+            error: '',
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -26,9 +76,10 @@ class LoginPage extends React.Component {
         c.logout();
     }
 
-    handleChange(e) {
-        const { name, value } = e.target;
-        this.setState({ [name]: value });
+    handleChange = fieldName => event => {
+        this.submitted = false;
+        const { value } = event.target;
+        this.setState({ [fieldName]: value });
     }
 
     handleSubmit(e) {
@@ -44,7 +95,6 @@ class LoginPage extends React.Component {
             return;
         }
 
-        this.setState({ loading: true });
         userService.login(username, password)
             .then(
                 user => {
@@ -54,40 +104,85 @@ class LoginPage extends React.Component {
                     this.props.history.push(from);
                     this.props.action();
                 },
-                error => this.setState({ error, loading: false })
+                error => this.setState({ error })
             );
     }
 
     render() {
-        const { username, password, submitted, loading, error } = this.state;
+        const { classes } = this.props;
+
+        const { username, password, submitted, error } = this.state;
         return (
             <div className="LoginPage">
-                <h2>Inloggen</h2>
-                <form name="form" onSubmit={this.handleSubmit}>
-                    <div className={'form-group' + (submitted && !username ? ' has-error' : '')}>
-                        <label htmlFor="username">Gebruikersnaam</label>
-                        <input type="text" className="form-control" name="username" value={username} onChange={this.handleChange} />
-                        {submitted && !username &&
-                            <div className="help-block">Gebruikersnaam is verplicht</div>
-                        }
-                    </div>
-                    <div className={'form-group' + (submitted && !password ? ' has-error' : '')}>
-                        <label htmlFor="password">Wachtwoord</label>
-                        <input type="password" className="form-control" name="password" value={password} onChange={this.handleChange} />
-                        {submitted && !password &&
-                            <div className="help-block">Wachtwoord is verplicht</div>
-                        }
-                    </div>
-                    <div>
-                        <button disabled={loading}>Log in</button>
-                        {loading &&
-                            <img alt="loginButton" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                        }
-                    </div>
-                    {error &&
-                        <div className={'alert alert-danger'}>{error}</div>
-                    }
-                </form>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <Typography variant="h3" gutterBottom>Inloggen</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <form className={classes.container} noValidate autoComplete="off" onSubmit={this.handleSubmit}>
+
+                            <TextField
+                                required
+                                id="username"
+                                label="Gebruikersnaam"
+                                className={classes.textField}
+                                error={submitted && !username}
+                                helperText={submitted && !username && "Gebruikersnaam is verplicht"}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
+                                InputProps={{
+                                    classes: {
+                                        input: classes.input,
+                                        underline: classes.underline,
+                                    }
+                                }}
+                                FormHelperTextProps={{
+                                    classes: {
+                                        error: classes.error
+                                    }
+                                }}
+                                fullWidth={true}
+                                value={username}
+                                onChange={this.handleChange('username')}
+                                margin="normal"
+                            />
+                            <TextField
+                                required
+                                id="password"
+                                label="Wachtwoord"
+                                className={classes.textField}
+                                error={submitted && !password}
+                                helperText={submitted && !password && "Wachtwoord is verplicht"}
+                                type="Password"
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
+                                InputProps={{
+                                    classes: {
+                                        input: classes.input,
+                                        underline: classes.underline,
+                                    }
+                                }}
+                                FormHelperTextProps={{
+                                    classes: {
+                                        error: classes.error
+                                    }
+                                }}
+                                fullWidth={true}
+                                value={password}
+                                onChange={this.handleChange('password')}
+                                margin="normal"
+                            />
+                            <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit">
+                                Log in
+                            </Button>
+                            <Grid item xs={12}>
+                                {error && <Typography variant="h4" className={classes.loginError}>{error}</Typography>}
+                            </Grid>
+                        </form>
+                    </Grid>
+                </Grid>
             </div>
         );
     }
@@ -95,4 +190,8 @@ class LoginPage extends React.Component {
 
 LoginPage.contextType = UserContext;
 
-export { LoginPage }; 
+LoginPage.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(LoginPage);

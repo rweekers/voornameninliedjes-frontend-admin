@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { PrivateRoute } from './components/PrivateRoute';
-import { LoginPage } from './LoginPage/LoginPage';
+import LoginPage from './LoginPage/LoginPage';
 import { HomePage } from './HomePage/HomePage';
 import SongsPage from './SongsPage/SongsPage';
 import SongDetail from './SongDetail/SongDetail';

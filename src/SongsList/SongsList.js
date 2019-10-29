@@ -65,11 +65,11 @@ class SongsList extends React.Component {
                 bufferCount(BUFFER_SIZE, BUFFER_SIZE)
             )
             .subscribe(song => {
-            const songList = this.state.songs.concat(song);
-            this.setState({
-                'songs': songList,
-            })
-        });
+                const songList = this.state.songs.concat(song);
+                this.setState({
+                    'songs': songList,
+                })
+            });
     }
 
     componentWillUnmount() {
@@ -79,7 +79,7 @@ class SongsList extends React.Component {
     render() {
         const { classes } = this.props;
 
-        return <div className={classes.root}>
+        return <div className={classes.root} key="songList">
             <Grid container spacing={3}>
                 {this.state.songs && this.state.songs.length > 0 && this.state.songs.map((song, index) =>
                     <Grid key={song.id} item xs={12} sm={6} md={4} lg={3}>

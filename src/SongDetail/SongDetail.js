@@ -18,8 +18,6 @@ import MusicVideoIcon from '@material-ui/icons/MusicVideo';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ReactMarkdown from 'react-markdown';
-import Snackbar from '@material-ui/core/Snackbar';
-import Fade from '@material-ui/core/Fade';
 import Divider from '@material-ui/core/Divider';
 import Link from '@material-ui/core/Link';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -29,6 +27,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import SourceFormDialog from '../material-components/SourceFormDialog';
+import CustomSnackBar from '../material-components/CustomSnackBar';
 
 const styles = theme => ({
     root: {
@@ -127,6 +126,16 @@ const styles = theme => ({
         color: "lightgrey",
         backgroundColor: "#424242",
     },
+    error: {
+        fontSize: 15,
+    },
+    snackbarSuccess: {
+        backgroundColor: 'green',
+        color: 'white',
+        fontSize: 16,
+        justifyContent: 'center',
+        minWidth: 900,
+    },
 });
 
 class SongDetail extends React.Component {
@@ -138,6 +147,9 @@ class SongDetail extends React.Component {
             user: {},
             photo: '',
             contribution: '',
+            artistError: '',
+            titleError: '',
+            nameError: '',
             youTubeError: '',
             spotifyError: '',
             backgroundError: '',
@@ -145,6 +157,9 @@ class SongDetail extends React.Component {
             wikiMediaError: '',
             open: false,
             cancelOpen: false,
+            messageType: '',
+            messageText: '',
+            routeToList: false,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -153,6 +168,9 @@ class SongDetail extends React.Component {
         this.handleClose = this.handleClose.bind(this);
         this.handleSourceChange = this.handleSourceChange.bind(this);
         this.handleSourceCancel = this.handleSourceCancel.bind(this);
+        this.handleCancelClick = this.handleCancelClick.bind(this);
+        this.removeSong = this.removeSong.bind(this);
+        this.setReroute = this.setReroute.bind(this);
     }
 
     handleChange = name => event => {
@@ -303,15 +321,47 @@ class SongDetail extends React.Component {
         if (!this.isValid(song)) {
             return;
         }
+        
+        let message = '';
 
-        songService.updateSong(this.state.song, this.state.user);
+        if (this.state.song.id) {
+            console.log(`updating song with id ${this.state.song.id}`);
+            songService.updateSong(this.state.song, this.state.user);
+            message = 'Nummer bijgewerkt';
+            this.handleClick('success', message);
+        } else {
+            console.log('inserting song');
+            let song = this.state.song;
+            // song.artistImage = 'http://test.nl/test.png';
+            songService.insertSong(song, this.state.user)
+                .then(song => {
+                    this.setState({ song: { ...this.state.song, id: song.id } });
+                    this.props.history.replace(`/songs/${song.id}`);
+                });
+            message = 'Nummer aangemaakt';
+            this.handleClick('success', message);
+        }
 
-        // Add insert song (and return id) to navigate to page when inserting
-        // Add snackbar as feedback element
+        if (this.state.routeToList) {
+            this.props.history.push({
+                pathname: '/songs',
+                messageType: 'success',
+                messageText: message,
+            });
+        }
+    }
 
-        this.handleClick();
+    removeSong() {
+        songService.removeSong(this.state.song.id);
+        this.props.history.push({
+                pathname: '/songs',
+                messageType: 'success',
+                messageText: 'Nummer verwijderd',
+            });
+    }
 
-        // this.props.history.push('/about');
+    handleCancelClick() {
+        this.props.history.push('/songs');
     }
 
     isEmpty(str) {
@@ -320,6 +370,9 @@ class SongDetail extends React.Component {
 
     clearValidations() {
         this.setState({
+            'artistError': '',
+            'titleError': '',
+            'nameError': '',
             'youTubeError': '',
             'spotifyError': '',
             'backgroundError': '',
@@ -330,6 +383,31 @@ class SongDetail extends React.Component {
 
     isValid(song) {
         let isValid = true;
+
+        const titleWords = song.title.split(' ');
+        if (!titleWords.includes(song.name)) {
+            this.setState({
+                open: true,
+                messageType: 'error',
+                messageText: 'De naam moet voorkomen in de titel van het nummer',
+            });
+            isValid = false;
+        }
+
+        if (!song.artist) {
+            this.setState({ 'artistError': 'Artiest moet gevuld zijn' });
+            isValid = false;
+        }
+
+        if (!song.title) {
+            this.setState({ 'titleError': 'Titel moet gevuld zijn' });
+            isValid = false;
+        }
+
+        if (!song.name) {
+            this.setState({ 'nameError': 'Naam moet gevuld zijn' });
+            isValid = false;
+        }
 
         if (song.status === 'SHOW' && !song.youtube) {
             this.setState({ 'youTubeError': 'YouTube link moet gevuld zijn' });
@@ -343,6 +421,15 @@ class SongDetail extends React.Component {
 
         if (song.status === 'SHOW' && !song.background) {
             this.setState({ 'backgroundError': 'Achtergrond moet gevuld zijn' });
+            isValid = false;
+        }
+
+        if (song.status === 'SHOW' && song.wikimediaPhotos.length === 0 && song.flickrPhotos.length === 0) {
+            this.setState( {
+                open: true,
+                messageType: 'error',
+                messageText: 'Let op: voeg minimaal 1 foto toe van de artiest',
+            });
             isValid = false;
         }
 
@@ -380,16 +467,26 @@ class SongDetail extends React.Component {
         }
     }
 
-    handleClick() {
+    handleClick(messageType, messageText) {
         this.setState({
             open: true,
+            messageType: messageType,
+            messageText: messageText,
         });
     }
 
     handleClose() {
         this.setState({
             open: false,
+            messageType: '',
+            messageText: '',
         });
+    }
+
+    setReroute(reroute) {
+        this.setState({
+            routeToList: reroute,
+        })
     }
 
     componentDidMount() {
@@ -403,11 +500,20 @@ class SongDetail extends React.Component {
                 wikimediaPhotos: [],
                 flickrPhotos: [],
                 status: 'IN_PROGRESS',
+                artist: '', 
+                title: '', 
+                name: '', 
+                spotify: '', 
+                youtube: '', 
+                background: '', 
                 artistImage: ''
             };
-            this.setState({ song })
+            this.setState({ song });
         } else {
             songService.getSong(songId).then(song => {
+                song.spotify = song.spotify ? song.spotify : '';
+                song.youtube = song.youtube ? song.youtube : '';
+                song.background = song.background ? song.background : '';
                 this.setState({ song });
             });
         }
@@ -423,10 +529,10 @@ class SongDetail extends React.Component {
 
         const songUrl = `https://voornameninliedjes.nl/song/${song.id}`
 
-        const key = `${song.artist}#${song.title}`;
+        const user = this.state.user;
 
         return (
-            <div className={classes.root} key={key}>
+            <div className={classes.root} key={song.id}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Typography variant="h3" gutterBottom>{song.artist} - {song.title} <a href={songUrl} target="_blank" rel="noopener noreferrer" hidden={!song.id}><MusicVideoIcon /></a></Typography>
@@ -437,6 +543,9 @@ class SongDetail extends React.Component {
                                 required
                                 id="artist"
                                 label="Artiest"
+                                value={song.artist}
+                                error={!this.isEmpty(this.state.artistError)}
+                                helperText={this.state.artistError}
                                 className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
@@ -447,8 +556,12 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
-                                value={song.artist}
                                 onChange={this.handleChange('artist')}
                                 margin="normal"
                             />
@@ -458,6 +571,8 @@ class SongDetail extends React.Component {
                                 label="Titel"
                                 value={song.title}
                                 className={classes.textField}
+                                error={!this.isEmpty(this.state.titleError)}
+                                helperText={this.state.titleError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
@@ -467,6 +582,11 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
                                 onChange={this.handleChange('title')}
                                 margin="normal"
@@ -477,6 +597,8 @@ class SongDetail extends React.Component {
                                 label="Naam"
                                 value={song.name}
                                 className={classes.textField}
+                                error={!this.isEmpty(this.state.nameError)}
+                                helperText={this.state.nameError}
                                 InputLabelProps={{
                                     className: classes.inputLabel
                                 }}
@@ -486,6 +608,11 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
                                 onChange={this.handleChange('name')}
                                 margin="normal"
@@ -518,6 +645,11 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
                                 onChange={this.handleChange('youtube')}
                                 margin="normal"
@@ -539,6 +671,11 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
                                 onChange={this.handleChange('spotify')}
                                 margin="normal"
@@ -559,6 +696,11 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
                                 onChange={event => this.handleWikimediaUrlChange(event)}
                                 margin="normal"
@@ -579,6 +721,11 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
                                 onChange={event => this.handleWikimediaAttributionChange(event)}
                                 margin="normal"
@@ -599,6 +746,11 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
                                 onChange={event => this.handleFlickrChange(event)}
                                 margin="normal"
@@ -622,6 +774,11 @@ class SongDetail extends React.Component {
                                         underline: classes.underline,
                                     }
                                 }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
                                 fullWidth={true}
                                 onChange={this.handleChange('background')}
                                 margin="dense"
@@ -686,19 +843,25 @@ class SongDetail extends React.Component {
                                 </ExpansionPanelActions>
                             </ExpansionPanel>
 
-                            <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit">
+                            <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit" onClick={() => this.setReroute(true)}>
+                                Opslaan&Sluiten
+                            </Button>
+                            <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit" onClick={() => this.setReroute(false)}>
                                 Opslaan
                             </Button>
-                            <Snackbar
-                                open={this.state.open}
-                                onClose={this.handleClose}
-                                onClick={this.handleClose}
-                                autoHideDuration={3000}
-                                TransitionComponent={Fade}
-                                ContentProps={{
-                                    'aria-describedby': 'message-id',
-                                }}
-                                message={<span id="message-id">Nummer succesvol geupdatet</span>}
+                            {user.roles &&  user.roles.includes('OWNER') && (
+                                <Button variant="contained" color="secondary" className={classes.button} fullWidth={true} onClick={this.removeSong} disabled={song.status !== 'TO_BE_DELETED'}>
+                                    Verwijderen
+                            </Button>
+                            )}
+                            <Button variant="contained" color="primary" className={classes.button} fullWidth={true} onClick={this.handleCancelClick}>
+                                Sluiten
+                            </Button>
+                            <CustomSnackBar 
+                                handleClose={this.handleClose} 
+                                open={this.state.open} 
+                                messageText={this.state.messageText}
+                                variant={this.state.messageType}
                             />
                         </form>
                     </Grid>
@@ -730,7 +893,7 @@ class SongDetail extends React.Component {
                                     <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                                 </div>
                                 <div className="youtube">
-                                    <iframe src={`https://www.youtube.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
+                                    <iframe src={`https://www.youtube-nocookie.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
                                 </div>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
