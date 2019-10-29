@@ -1,4 +1,6 @@
 import React from 'react';
+import { from, interval, zip } from 'rxjs';
+import { bufferCount, map } from 'rxjs/operators';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 import { Link } from 'react-router-dom';
@@ -29,7 +31,9 @@ const styles = theme => ({
     },
 });
 
-const INITIAL_CAP_SIZE = 30;
+const INITIAL_CAP_SIZE = 100;
+const BUFFER_SIZE = 100;
+const LOADING_INTERVAL_TIME = 50;
 
 class SongsList extends React.Component {
 
@@ -37,7 +41,7 @@ class SongsList extends React.Component {
         super(props);
         this.state = {
             songs: [],
-         }
+        }
     }
 
     componentDidMount() {
@@ -46,12 +50,30 @@ class SongsList extends React.Component {
         this.setState({
             'songs': songs,
         });
+
+        // Create interval observable, push element to state in batches
+        const restOfSongs = this.props.songs.slice(INITIAL_CAP_SIZE);
+        const interval$ = interval(LOADING_INTERVAL_TIME);
+
+        const restOfSongs$ = from(restOfSongs);
+
+        const songs$ = zip(interval$, restOfSongs$);
+
+        this.subscription = songs$
+            .pipe(
+                map(([_, song]) => song),
+                bufferCount(BUFFER_SIZE, BUFFER_SIZE)
+            )
+            .subscribe(song => {
+            const songList = this.state.songs.concat(song);
+            this.setState({
+                'songs': songList,
+            })
+        });
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            'songs': this.props.songs,
-        });
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
     }
 
     render() {
