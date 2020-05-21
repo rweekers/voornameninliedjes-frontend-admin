@@ -10,13 +10,25 @@ import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MusicVideoIcon from '@material-ui/icons/MusicVideo';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 import ReactMarkdown from 'react-markdown';
 import Snackbar from '@material-ui/core/Snackbar';
 import Fade from '@material-ui/core/Fade';
+import Divider from '@material-ui/core/Divider';
+import Link from '@material-ui/core/Link';
+import Tooltip from '@material-ui/core/Tooltip';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import SourceFormDialog from '../material-components/SourceFormDialog';
 
 const styles = theme => ({
     root: {
@@ -46,6 +58,17 @@ const styles = theme => ({
     input: {
         color: 'white',
         fontSize: 18,
+    },
+    link: {
+        color: 'white',
+        fontSize: 18,
+        textAlign: 'left',
+        "&:hover": {
+            color: 'orange',
+        }
+    },
+    iconButton: {
+        color: 'white',
     },
     multilineInput: {
         color: 'white',
@@ -77,6 +100,33 @@ const styles = theme => ({
         marginLeft: 10,
         marginRight: 10,
     },
+    sourcesExpansionPanel: {
+        color: "lightgrey",
+        backgroundColor: "#424242",
+        marginLeft: 10,
+        marginRight: 10,
+        width: "100%",
+        textAlign: 'left',
+        paddingBottom: '4px',
+        paddingTop: '4px',
+    },
+    dialog: {
+    },
+    dialogContent: {
+        backgroundColor: "#424242",
+    },
+    dialogContentText: {
+        color: 'white',
+        fontSize: 16,
+    },
+    dialogTitle: {
+        color: 'white',
+        backgroundColor: "#424242",
+    },
+    dialogActions: {
+        color: "lightgrey",
+        backgroundColor: "#424242",
+    },
 });
 
 class SongDetail extends React.Component {
@@ -84,7 +134,7 @@ class SongDetail extends React.Component {
         super(props);
 
         this.state = {
-            song: { artist: '', title: '', name: '', spotify: '', youtube: '', background: '', flickrPhotos: [], wikimediaPhotos: [] },
+            song: { artist: '', title: '', name: '', spotify: '', youtube: '', background: '', flickrPhotos: [], wikimediaPhotos: [], sources: [] },
             user: {},
             photo: '',
             contribution: '',
@@ -94,12 +144,15 @@ class SongDetail extends React.Component {
             licenseError: '',
             wikiMediaError: '',
             open: false,
+            cancelOpen: false,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.handleSourceChange = this.handleSourceChange.bind(this);
+        this.handleSourceCancel = this.handleSourceCancel.bind(this);
     }
 
     handleChange = name => event => {
@@ -131,6 +184,69 @@ class SongDetail extends React.Component {
 
         this.setState({
             song: { ...this.state.song, 'flickrPhotos': flickrPhotos }
+        });
+    }
+
+    addSource() {
+        const sources = [...this.state.song.sources];
+
+        const source = {
+            url: '',
+            name: ''
+        };
+        sources.push(source);
+
+        this.setState({
+            song: { ...this.state.song, 'sources': sources }
+        });
+    }
+
+    handleSourceChange(s, index) {
+        const sources = [...this.state.song.sources];
+
+        if (index >= 0) {
+            sources.splice(index, 1, s);
+        }
+
+        this.setState({
+            song: { ...this.state.song, 'sources': sources }
+        });
+    }
+
+    handleSourceCancel() {
+        const sources = [...this.state.song.sources];
+
+        const updatedSources = sources.filter((item) => {
+            return item.url !== '' && item.name !== ''
+        });
+
+        this.setState({
+            song: { ...this.state.song, 'sources': updatedSources }
+        });
+    }
+
+    handleDeleteDialogOpen() {
+        this.setState({
+            cancelOpen: true,
+        });
+    }
+
+    handleDeleteDialogCancel() {
+        this.setState({
+            cancelOpen: false,
+        });
+    }
+
+    handleDeleteDialogSave(index) {
+        const sources = [...this.state.song.sources];
+
+        if (index >= 0) {
+            sources.splice(index, 1);
+        }
+
+        this.setState({
+            cancelOpen: false,
+            song: { ...this.state.song, 'sources': sources }
         });
     }
 
@@ -320,7 +436,7 @@ class SongDetail extends React.Component {
                             <TextField
                                 required
                                 id="artist"
-                                label="Artist"
+                                label="Artiest"
                                 className={classes.textField}
                                 InputLabelProps={{
                                     className: classes.inputLabel
@@ -339,7 +455,7 @@ class SongDetail extends React.Component {
                             <TextField
                                 required
                                 id="title"
-                                label="Title"
+                                label="Titel"
                                 value={song.title}
                                 className={classes.textField}
                                 InputLabelProps={{
@@ -358,7 +474,7 @@ class SongDetail extends React.Component {
                             <TextField
                                 required
                                 id="name"
-                                label="Name"
+                                label="Naam"
                                 value={song.name}
                                 className={classes.textField}
                                 InputLabelProps={{
@@ -469,7 +585,7 @@ class SongDetail extends React.Component {
                             />
                             <TextField
                                 id="flickrId"
-                                label="Flickr Photo Id"
+                                label="Flickr fotoId"
                                 value={flickrId}
                                 className={classes.textField}
                                 error={!this.isEmpty(this.state.licenseError)}
@@ -490,7 +606,7 @@ class SongDetail extends React.Component {
                             <TextField
                                 required={song.status === 'SHOW'}
                                 id="background"
-                                label="Background"
+                                label="Achtergrond"
                                 placeholder="Achtergrondinformatie over het nummer"
                                 multiline
                                 value={song.background}
@@ -510,6 +626,66 @@ class SongDetail extends React.Component {
                                 onChange={this.handleChange('background')}
                                 margin="dense"
                             />
+                            <ExpansionPanel className={classes.sourcesExpansionPanel}>
+                                <ExpansionPanelSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="sources-content"
+                                    id="sources-header"
+                                >
+                                    <Typography className={classes.heading}>Bronnen</Typography>
+                                </ExpansionPanelSummary>
+                                {song.sources.map((s, index) => (
+                                    <ExpansionPanelDetails key={`source${index + 1}`}>
+                                        <Grid container spacing={1} alignItems='center'>
+                                            <Grid item xs={10}>
+                                                <Link href={s.url} className={classes.link} underline='none' target='_blank' rel='noopener'>
+                                                    {s.name}
+                                                </Link>
+                                            </Grid>
+                                            <Grid item xs={1}>
+                                                <SourceFormDialog source={s} index={index} open={s.url === ''} onSourceCancel={this.handleSourceCancel} onSourceUpdate={this.handleSourceChange} />
+                                            </Grid>
+                                            <Grid item xs={1}>
+                                                <Tooltip title="Verwijderen">
+                                                    <IconButton aria-label="delete" color="primary" className={classes.iconButton} onClick={event => this.handleDeleteDialogOpen()}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Dialog
+                                                    open={this.state.cancelOpen}
+                                                    onClose={event => this.handleDeleteDialogCancel}
+                                                    aria-labelledby="alert-dialog-title"
+                                                    aria-describedby="alert-dialog-description"
+                                                    BackdropProps={{ style: { backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)' } }}
+                                                    className={classes.dialog}
+                                                >
+                                                    <DialogTitle id="alert-dialog-title" className={classes.dialogTitle}>{"Bron verwijderen?"}</DialogTitle>
+                                                    <DialogContent className={classes.dialogContent}>
+                                                        <DialogContentText id="alert-dialog-description" className={classes.dialogContentText}>
+                                                            {`Weet je zeker dat je bron ${s.name} wilt verwijderen?`}
+                                                    </DialogContentText>
+                                                    </DialogContent>
+                                                    <DialogActions className={classes.dialogActions}>
+                                                        <Button onClick={event => this.handleDeleteDialogCancel()} variant="contained" color="primary" className={classes.button}>
+                                                            Annuleren
+                                                    </Button>
+                                                        <Button onClick={event => this.handleDeleteDialogSave(index)} variant="contained" color="primary" className={classes.button} autoFocus>
+                                                            Verwijderen
+                                                    </Button>
+                                                    </DialogActions>
+                                                </Dialog>
+                                            </Grid>
+                                        </Grid>
+                                    </ExpansionPanelDetails>
+                                ))}
+                                <Divider />
+                                <ExpansionPanelActions>
+                                    <Button size="small" variant="contained" className={classes.button} color="primary" onClick={() => this.addSource()}>
+                                        Bron toevoegen
+                                    </Button>
+                                </ExpansionPanelActions>
+                            </ExpansionPanel>
+
                             <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit">
                                 Opslaan
                             </Button>
