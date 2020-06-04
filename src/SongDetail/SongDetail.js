@@ -332,7 +332,6 @@ class SongDetail extends React.Component {
         } else {
             console.log('inserting song');
             let song = this.state.song;
-            // song.artistImage = 'http://test.nl/test.png';
             songService.insertSong(song, this.state.user)
                 .then(song => {
                     this.setState({ song: { ...this.state.song, id: song.id } });
