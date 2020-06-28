@@ -6,8 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { userService } from '../services/user.service';
-import { UserContext } from '../user-context';
+import { userService } from '../../services/user.service';
+import { UserContext } from '../../user-context';
 
 const styles = theme => ({
     root: {

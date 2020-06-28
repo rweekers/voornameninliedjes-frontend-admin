@@ -1,17 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { PrivateRoute } from './components/PrivateRoute';
-import LoginPage from './LoginPage/LoginPage';
-import { HomePage } from './HomePage/HomePage';
-import SongsPage from './SongsPage/SongsPage';
-import SongDetail from './SongDetail/SongDetail';
-import { About } from './About/About';
-import { UserContext } from './user-context';
+import { PrivateRoute } from '../PrivateRoute';
+import LoginPage from '../LoginPage/LoginPage';
+import { HomePage } from '../HomePage/HomePage';
+import SongsPage from '../SongsPage/SongsPage';
+import SongDetail from '../SongDetail/SongDetail';
+import { About } from '../About/About';
+import { UserContext } from '../../user-context';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import SearchAppBar from './material-components/SearchAppBar';
+import SearchAppBar from '../SearchAppBar';
 import './App.css';
 
 const styles = theme => ({

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { songService } from '../services/song.service';
+import { songService } from '../../services/song.service';
 import SongsList from '../SongsList/SongsList';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -11,7 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import CustomSnackBar from '../material-components/CustomSnackBar';
+import CustomSnackBar from '../CustomSnackBar';
 
 const styles = theme => ({
     root: {

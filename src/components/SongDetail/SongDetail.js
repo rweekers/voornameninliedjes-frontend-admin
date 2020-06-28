@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { songService } from '../services/song.service';
+import { songService } from '../../services/song.service';
 import './SongDetail.css';
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
@@ -26,8 +26,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import SourceFormDialog from '../material-components/SourceFormDialog';
-import CustomSnackBar from '../material-components/CustomSnackBar';
+import SourceFormDialog from '../SourceFormDialog';
+import CustomSnackBar from '../CustomSnackBar';
 
 const styles = theme => ({
     root: {
