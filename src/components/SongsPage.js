@@ -1,21 +1,29 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { songService } from '../../services/song.service';
-import SongsList from '../SongsList/SongsList';
+import { songService } from '../services/song.service';
+import SongsList from './SongsList';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import './SongsPage.css';
 import { withStyles } from '@material-ui/styles';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import CustomSnackBar from '../CustomSnackBar';
+import CustomSnackBar from './CustomSnackBar';
 
 const styles = theme => ({
     root: {
         flexGrow: 1,
+    },
+    newSong: {
+        width: '60%',
+    },
+    switchesWrapper: {
+        textAlign: 'center',
+    },
+    switches: {
+        display: 'inline-block',
     },
 });
 
@@ -101,8 +109,8 @@ class SongsPage extends React.Component {
                         <Typography variant="h4" gutterBottom>Nummers</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <div id="switchesWrapper">
-                            <RadioGroup id="switches">
+                        <div id="switchesWrapper" className={classes.switchesWrapper}>
+                            <RadioGroup id="switches" className={classes.switches}>
                                 <FormControlLabel
                                     control={
                                         <Radio checked={this.state.filter === SONGS_TO_SHOW} onChange={this.handleChange(SONGS_TO_SHOW)} value={SONGS_TO_SHOW} color="primary" />
@@ -129,7 +137,7 @@ class SongsPage extends React.Component {
                     </Grid>
                     <Grid item xs={12}>
                         <Link key='new' to={'/songs/new'}>
-                            <Button id="newSong" variant="contained" color="primary">
+                            <Button id="newSong" className={classes.newSong} variant="contained" color="primary">
                                 Nieuw nummer invoeren
                                 </Button>
                         </Link>

@@ -1,17 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './LoginPage.css';
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { userService } from '../../services/user.service';
-import { UserContext } from '../../user-context';
+import { userService } from '../services/user.service';
+import { UserContext } from '../user-context';
 
 const styles = theme => ({
     root: {
         flexGrow: 1,
+    },
+    loginPage: {
+        marginTop: '5%',
     },
     container: {
         display: 'flex',
@@ -113,7 +115,7 @@ class LoginPage extends React.Component {
 
         const { username, password, submitted, error } = this.state;
         return (
-            <div className="LoginPage">
+            <div className={classes.loginPage}>
                 <Grid container>
                     <Grid item xs={12}>
                         <Typography variant="h3" gutterBottom>Inloggen</Typography>

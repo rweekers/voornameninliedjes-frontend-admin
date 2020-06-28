@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { songService } from '../../services/song.service';
-import './SongDetail.css';
+import { songService } from '../services/song.service';
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
@@ -26,12 +25,33 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import SourceFormDialog from '../SourceFormDialog';
-import CustomSnackBar from '../CustomSnackBar';
+import SourceFormDialog from './SourceFormDialog';
+import CustomSnackBar from './CustomSnackBar';
 
 const styles = theme => ({
+    songText: {
+        color: 'whitesmoke',
+        fontSize: '1.5em',
+    },
+    artistImage: {
+        maxWidth: '100%',
+    },
+    previewWebsiteWrapper: {
+        width: '100%',
+        height: '800px',
+    },
+    previewWebsite: {
+        width: '100%',
+        height: '100%',
+        border: 'none',
+    },
+
     root: {
         flexGrow: 1,
+        '& a': {
+            textDecoration: 'none',
+            color: 'white',
+        },
     },
     container: {
         display: 'flex',
@@ -878,7 +898,7 @@ class SongDetail extends React.Component {
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <div className="song-text-container">
-                                    <content className="song-text"><ReactMarkdown source={this.state.song.background} /></content>
+                                    <content className={classes.songText}><ReactMarkdown source={this.state.song.background} /></content>
                                 </div>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
@@ -910,7 +930,7 @@ class SongDetail extends React.Component {
                             <ExpansionPanelDetails>
                                 <div>
                                     {song.artistImage &&
-                                        <img className="artistImage"
+                                        <img className={classes.artistImage}
                                             src={song.artistImage}
                                             alt={song.artist}
                                         />}
@@ -926,8 +946,8 @@ class SongDetail extends React.Component {
                                 <Typography variant="h5" gutterBottom>Preview website</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
-                                <div className="preview-website-wrapper">
-                                    <iframe src={songUrl} title="preview-website" className="preview-website" />
+                                <div className={classes.previewWebsiteWrapper}>
+                                    <iframe src={songUrl} title="preview-website" className={classes.previewWebsite} />
                                 </div>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>

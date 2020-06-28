@@ -1,20 +1,34 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { PrivateRoute } from '../PrivateRoute';
-import LoginPage from '../LoginPage/LoginPage';
-import { HomePage } from '../HomePage/HomePage';
-import SongsPage from '../SongsPage/SongsPage';
-import SongDetail from '../SongDetail/SongDetail';
-import { About } from '../About/About';
-import { UserContext } from '../../user-context';
+import { PrivateRoute } from './PrivateRoute';
+import LoginPage from './LoginPage';
+import { HomePage } from './HomePage';
+import SongsPage from './SongsPage';
+import SongDetail from './SongDetail';
+import { About } from './About';
+import { UserContext } from '../user-context';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import SearchAppBar from '../SearchAppBar';
-import './App.css';
+import SearchAppBar from './SearchAppBar';
 
 const styles = theme => ({
+  root: {
+    backgroundColor: '#333',
+    color: 'white',
+    textAlign: 'center',
+    '& a': {
+      textDecoration: 'none',
+    },
+  },
+  login: {
+    textAlign: 'right',
+    padding: '0 1% 0 0',
+    '& p': {
+      display: 'inline',
+    },
+  },
   button: {
     color: 'white'
   },
@@ -83,12 +97,12 @@ class App extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div className="App">
+      <div className={classes.root}>
         <UserContext.Provider value={this.state}>
           <Router>
             <div>
               <SearchAppBar loggedOut={!this.state.loggedIn} />
-              <div className="login" hidden={!this.state.loggedIn}>
+              <div className={classes.login} hidden={!this.state.loggedIn}>
                 {loggedIn && user !== null && <div><Typography variant="subtitle1" gutterBottom>Ingelogd als {user.username} <Link to="/login"><Button className={classes.button}>Uitloggen</Button></Link></Typography></div>}
               </div>
               <Switch>

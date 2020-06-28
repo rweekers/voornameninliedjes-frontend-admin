@@ -11,7 +11,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import './SongsList.css';
 
 const styles = theme => ({
     root: {
@@ -26,8 +25,13 @@ const styles = theme => ({
         height: 280,
         backgroundPosition: '0% 1%',
     },
+    progressWrapper: {
+        marginTop: '5%',
+        textAlign: 'center',
+    },
     progress: {
         margin: 10,
+        display: 'inline-block',
     },
 });
 
@@ -106,8 +110,8 @@ class SongsList extends React.Component {
                 )}
                 {this.state.songs && this.state.songs.length === 0 &&
                     <Grid item xs={12}>
-                        <div id="progressWrapper">
-                            <CircularProgress id="progress" size="6rem" thickness={4.5} />
+                        <div id="progressWrapper" className={classes.progressWrapper}>
+                            <CircularProgress id="progress" className={classes.progress} size="6rem" thickness={4.5} />
                         </div>
                     </Grid>
                 }
