@@ -6,10 +6,10 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionActions from '@material-ui/core/AccordionActions';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -113,13 +113,13 @@ const styles = theme => ({
     button: {
         margin: 10,
     },
-    expansionPanel: {
+    accordion: {
         color: "lightgrey",
         backgroundColor: "#424242",
         marginLeft: 10,
         marginRight: 10,
     },
-    sourcesExpansionPanel: {
+    sourcesAccordion: {
         color: "lightgrey",
         backgroundColor: "#424242",
         marginLeft: 10,
@@ -805,16 +805,16 @@ class SongDetail extends React.Component {
                                 onChange={this.handleChange('background')}
                                 margin="dense"
                             />
-                            <ExpansionPanel className={classes.sourcesExpansionPanel}>
-                                <ExpansionPanelSummary
+                            <Accordion className={classes.sourcesAccordion}>
+                                <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="sources-content"
                                     id="sources-header"
                                 >
                                 <Typography className={classes.heading}>Bronnen</Typography>
-                                </ExpansionPanelSummary>
+                                </AccordionSummary>
                                 {song.sources.map((s, index) => (
-                                    <ExpansionPanelDetails key={`source${index + 1}`}>
+                                    <AccordionDetails key={`source${index + 1}`}>
                                         <Grid container spacing={1} alignItems='center'>
                                             <Grid item xs={10}>
                                                 <Link href={s.url} className={classes.link} underline='none' target='_blank' rel='noopener'>
@@ -855,15 +855,15 @@ class SongDetail extends React.Component {
                                                 </Dialog>
                                             </Grid>
                                         </Grid>
-                                    </ExpansionPanelDetails>
+                                    </AccordionDetails>
                                 ))}
                                 <Divider />
-                                <ExpansionPanelActions>
+                                <AccordionActions>
                                     <Button size="small" variant="contained" className={classes.button} color="primary" onClick={() => this.addSource()}>
                                         Bron toevoegen
                                     </Button>
-                                </ExpansionPanelActions>
-                            </ExpansionPanel>
+                                </AccordionActions>
+                            </Accordion>
 
                             <Button variant="contained" color="primary" className={classes.button} fullWidth={true} type="submit" onClick={() => this.setReroute(true)}>
                                 Opslaan&Sluiten
@@ -888,46 +888,46 @@ class SongDetail extends React.Component {
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <ExpansionPanel className={classes.expansionPanel} defaultExpanded={true}>
-                            <ExpansionPanelSummary
+                        <Accordion className={classes.accordion} defaultExpanded={true}>
+                            <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="background-content"
                                 id="background-header"
                             >
                                 <Typography variant="h5" gutterBottom>Geformatteerde achtergrond tekst</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
+                            </AccordionSummary>
+                            <AccordionDetails>
                                 <div className="song-text-container">
                                     <content className={classes.songText}><ReactMarkdown source={this.state.song.background} /></content>
                                 </div>
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                        <ExpansionPanel className={classes.expansionPanel}>
-                            <ExpansionPanelSummary
+                            </AccordionDetails>
+                        </Accordion>
+                        <Accordion className={classes.accordion}>
+                            <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="youtube-spotify-content"
                                 id="youtube-spotify-header"
                             >
                                 <Typography variant="h5" gutterBottom>YouTube en Spotify</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
+                            </AccordionSummary>
+                            <AccordionDetails>
                                 <div className="spotify">
                                     <iframe src={`https://open.spotify.com/embed/track/${song.spotify}`} className="spotify" width="100%" height="80px" title={song.title} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                                 </div>
                                 <div className="youtube">
                                     <iframe src={`https://www.youtube-nocookie.com/embed/${song.youtube}?rel=0`} width="80%" height="100%" title={song.title}></iframe>
                                 </div>
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                        <ExpansionPanel className={classes.expansionPanel}>
-                            <ExpansionPanelSummary
+                            </AccordionDetails>
+                        </Accordion>
+                        <Accordion className={classes.accordion}>
+                            <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="image-content"
                                 id="image-header"
                             >
                                 <Typography variant="h5" gutterBottom>Foto artiest</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
+                            </AccordionSummary>
+                            <AccordionDetails>
                                 <div>
                                     {song.artistImage &&
                                         <img className={classes.artistImage}
@@ -935,22 +935,22 @@ class SongDetail extends React.Component {
                                             alt={song.artist}
                                         />}
                                 </div>
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                        <ExpansionPanel className={classes.expansionPanel}>
-                            <ExpansionPanelSummary
+                            </AccordionDetails>
+                        </Accordion>
+                        <Accordion className={classes.accordion}>
+                            <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="preview-content"
                                 id="preview-header"
                             >
                                 <Typography variant="h5" gutterBottom>Preview website</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
+                            </AccordionSummary>
+                            <AccordionDetails>
                                 <div className={classes.previewWebsiteWrapper}>
                                     <iframe src={songUrl} title="preview-website" className={classes.previewWebsite} />
                                 </div>
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
+                            </AccordionDetails>
+                        </Accordion>
                     </Grid>
                 </Grid>
             </div >
