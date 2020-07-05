@@ -5,6 +5,7 @@ import LoginPage from './LoginPage';
 import { HomePage } from './HomePage';
 import SongsPage from './SongsPage';
 import SongDetail from './SongDetail';
+import SongList2 from './SongList2';
 import { About } from './About';
 import { UserContext } from '../user-context';
 import PropTypes from 'prop-types';
@@ -108,6 +109,7 @@ class App extends React.Component {
               <Switch>
                 <PrivateRoute exact path="/about" component={About} />
                 <PrivateRoute exact path="/songs" component={SongsPage} />
+                <PrivateRoute exact path="/songs2" component={SongList2} />
                 <PrivateRoute exact path="/" component={HomePage} />
                 <PrivateRoute exact path="/songs/:id" component={SongDetail} />
                 <PrivateRoute exact path="/songs/new" component={SongDetail} />

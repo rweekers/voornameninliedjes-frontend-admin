@@ -8,3 +8,7 @@ const voornameninliedjesApp = combineReducers({
 });
 
 export default voornameninliedjesApp;
+
+export const getIsFetching = (state, filter) =>
+''
+  // fromList.getIsFetching(state.listByFilter[filter]);
