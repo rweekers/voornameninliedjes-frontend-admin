@@ -1,14 +1,24 @@
-import React, { Component, PropTypes } from 'react';
+// import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import * as actions from '../actions';
+// import { withRouter } from 'react-router';
+import { addTodo, fetchSongs } from '../actions';
 // import { getVisibleTodos, getErrorMessage, getIsFetching } from '../reducers';
 // import TodoList from './TodoList';
 // import FetchError from './FetchError';
 
-class SongList2 extends Component {
+class SongList2 extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { input: "" };
+  }
+
+  updateInput = input => {
+    this.setState({ input });
+  };
+
   componentDidMount() {
-    this.fetchData();
+    this.props.fetchSongs();
   }
 
   componentDidUpdate(prevProps) {
@@ -17,31 +27,29 @@ class SongList2 extends Component {
     // }
   }
 
-  fetchData() {
-    // const { filter, fetchTodos } = this.props;
-    // fetchSongs(filter);
+  handleAddTodo = () => {
+    // dispatches actions to add todo
+    this.props.addTodo(this.state.input)
+
+    // sets state back to empty string
+    this.setState({ input: '' })
   }
 
   render() {
     // const { isFetching, errorMessage, toggleTodo, todos } = this.props;
     // if (isFetching && !todos.length) {
-      return <p>Loading...</p>;
-    // }
-    // if (errorMessage && !todos.length) {
-    //   return (
-        {/* <FetchError */}
-        //   message={errorMessage}
-        //   onRetry={() => this.fetchData()}
-        // />
-    //   );
-    // }
-
-    // return (
-      {/* <TodoList */}
-        // todos={todos}
-        // onTodoClick={toggleTodo}
-    //   />
-    // );
+      return (
+        <div>
+          <p>Check</p>;
+          <input
+            onChange={e => this.updateInput(e.target.value)}
+            value={this.state.input}
+          />
+          <button className="add-todo" onClick={this.handleAddTodo}>
+            Add Todo
+          </button>
+        </div>
+      )
   }
 }
 
@@ -57,6 +65,7 @@ SongList2.propTypes = {
 const mapStateToProps = (state, { params }) => {
 //   const filter = params.filter || 'all';
   return {
+    isFetching: true
     // isFetching: getIsFetching(state, filter),
     // errorMessage: getErrorMessage(state, filter),
     // todos: getVisibleTodos(state, filter),
@@ -66,7 +75,7 @@ const mapStateToProps = (state, { params }) => {
 
 SongList2 = connect(
   mapStateToProps,
-  actions
+  { addTodo, fetchSongs }
 )(SongList2);
 
 export default SongList2;
