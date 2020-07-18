@@ -9,7 +9,7 @@ export const fetchSongs = () => (dispatch, getState) => {
   }
 
   dispatch({
-    type: 'FETCH_TODOS_REQUEST'
+    type: 'FETCH_SONGS_REQUEST'
   });
 
   return songService.getAll().then(
@@ -17,7 +17,7 @@ export const fetchSongs = () => (dispatch, getState) => {
       console.log('gotten response ', response);
       dispatch({
         type: 'FETCH_SONGS_SUCCESS',
-        response: normalize(response, schema.song)
+        response: normalize(response, schema.songs)
       });
     },
     error => {

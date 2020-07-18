@@ -5,10 +5,10 @@
 
 export const isFetching = (state = false, action) => {
   switch (action.type) {
-    case 'FETCH_TODOS_REQUEST':
+    case 'FETCH_SONGS_REQUEST':
       return true;
-    case 'FETCH_TODOS_SUCCESS':
-    case 'FETCH_TODOS_FAILURE':
+    case 'FETCH_SONGS_SUCCESS':
+    case 'FETCH_SONGS_FAILURE':
       return false;
     default:
       return state;
@@ -18,11 +18,24 @@ export const isFetching = (state = false, action) => {
 export const songs = (state = [], action) => {
   switch (action.type) {
     case 'FETCH_SONGS_SUCCESS':
-      console.log('Result: ', action);
-      return action.response.entities.songs.undefined // check why this undefined is there
-      // return state
+      return action.response.result
     default:
       return state
   }
 }
 
+export const errorMessage = (state = null, action) => {
+  switch (action.type) {
+    case 'FETCH_SONGs_FAILURE':
+      return action.message;
+    case 'FETCH_SONGS_REQUEST':
+    case 'FETCH_SONGS_SUCCESS':
+      return null;
+    default:
+      return state;
+  }
+};
+
+export const getIsFetching = (state) => state.isFetching;
+export const getSongs = (state) => state.songs;
+export const getErrorMessage = (state) => state.errorMessage;

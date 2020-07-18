@@ -1,20 +1,28 @@
 import { combineReducers } from 'redux';
-import { songs, isFetching } from './songs';
+import { songs, isFetching, errorMessage } from './songs';
 import visibilityFilter from './visibilityFilter';
+import * as fromSongs from './songs';
 
 const voornameninliedjesApp = combineReducers({
   songs,
   visibilityFilter,
-  isFetching
+  isFetching,
+  errorMessage
 });
 
 export default voornameninliedjesApp;
 
-export const getIsFetching2 = (state, filter) =>
-  ''
-// fromList.getIsFetching(state.listByFilter[filter]);
-
 export const getIsFetching = (state) => {
-  console.log('Gotten state ', state);
-  return false;
+  return fromSongs.getIsFetching(state)
+}
+
+export const getSongs = (state) => {
+  const my_object = fromSongs.getSongs(state);
+  const sliced = my_object.slice(100, 120);
+
+  return sliced;
+}
+
+export const getErrorMessage = (state) => {
+  return fromSongs.getErrorMessage(state);
 }

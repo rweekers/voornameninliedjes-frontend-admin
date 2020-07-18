@@ -1,11 +1,8 @@
 // import React, { Component, PropTypes } from 'react';
 import React from 'react';
 import { connect } from 'react-redux';
-// import { withRouter } from 'react-router';
 import { addTodo, fetchSongs } from '../actions';
-// import { getVisibleTodos, getErrorMessage, getIsFetching } from '../reducers';
-// import TodoList from './TodoList';
-// import FetchError from './FetchError';
+import { getIsFetching, getSongs, getErrorMessage } from '../reducers';
 
 class SongList2 extends React.Component {
   constructor(props) {
@@ -36,40 +33,55 @@ class SongList2 extends React.Component {
   }
 
   render() {
-    // const { isFetching, errorMessage, toggleTodo, todos } = this.props;
-    // if (isFetching && !todos.length) {
+    const { isFetching, songs, errorMessage } = this.props;
+
+    if (isFetching && !songs.length) {
+      return <p>Loading...</p>;
+    }
+
+    if (errorMessage && !songs.length) {
       return (
         <div>
-          <p>Check</p>;
-          <input
-            onChange={e => this.updateInput(e.target.value)}
-            value={this.state.input}
-          />
-          <button className="add-todo" onClick={this.handleAddTodo}>
-            Add Todo
-          </button>
+          <p>{errorMessage}</p>
         </div>
-      )
+      );
+    }
+
+    return (
+      <div>
+        <p>Check</p>;
+        <input
+          onChange={e => this.updateInput(e.target.value)}
+          value={this.state.input}
+        />
+        <button className="add-todo" onClick={this.handleAddTodo}>
+          Add Todo
+          </button>
+        <ul>
+          {songs.map(song =>
+            <div key={song.id}>{song.title} - {song.artist}</div>
+          )}
+        </ul>
+      </div>
+    )
   }
 }
 
 SongList2.propTypes = {
-//   filter: PropTypes.oneOf(['all', 'active', 'completed']).isRequired,
-//   errorMessage: PropTypes.string,
-//   todos: PropTypes.array.isRequired,
-//   isFetching: PropTypes.bool.isRequired,
-//   fetchTodos: PropTypes.func.isRequired,
-//   toggleTodo: PropTypes.func.isRequired,
+  //   filter: PropTypes.oneOf(['all', 'active', 'completed']).isRequired,
+  //   errorMessage: PropTypes.string,
+  //   todos: PropTypes.array.isRequired,
+  //   isFetching: PropTypes.bool.isRequired,
+  //   fetchTodos: PropTypes.func.isRequired,
+  //   toggleTodo: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, { params }) => {
-//   const filter = params.filter || 'all';
+  //   const filter = params.filter || 'all';
   return {
-    isFetching: true
-    // isFetching: getIsFetching(state, filter),
-    // errorMessage: getErrorMessage(state, filter),
-    // todos: getVisibleTodos(state, filter),
-    // filter,
+    isFetching: getIsFetching(state),
+    songs: getSongs(state),
+    errorMessage: getErrorMessage(state),
   };
 };
 
