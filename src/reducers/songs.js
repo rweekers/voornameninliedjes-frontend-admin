@@ -26,7 +26,7 @@ export const songs = (state = [], action) => {
 
 export const errorMessage = (state = null, action) => {
   switch (action.type) {
-    case 'FETCH_SONGs_FAILURE':
+    case 'FETCH_SONGS_FAILURE':
       return action.message;
     case 'FETCH_SONGS_REQUEST':
     case 'FETCH_SONGS_SUCCESS':
