@@ -18,9 +18,10 @@ export const getIsFetching = (state) => {
 
 export const getSongs = (state) => {
   const my_object = fromSongs.getSongs(state);
-  const sliced = my_object.slice(100, 120);
+  // const sliced = my_object.slice(100, 120);
 
-  return sliced;
+  // return sliced;
+  return my_object;
 }
 
 export const getErrorMessage = (state) => {

@@ -3,7 +3,9 @@ import * as schema from './schema';
 import { getIsFetching } from '../reducers';
 import { songService } from '../services/song.service';
 
-export const fetchSongs = () => (dispatch, getState) => {
+export const fetchSongs = (firstCharacter) => (dispatch, getState) => {
+  console.log('gotten first character ' + firstCharacter);
+
   if (getIsFetching(getState())) {
     return Promise.resolve();
   }
@@ -12,7 +14,7 @@ export const fetchSongs = () => (dispatch, getState) => {
     type: 'FETCH_SONGS_REQUEST'
   });
 
-  return songService.getAll().then(
+  return songService.getByFirstCharacter(firstCharacter).then(
     response => {
       console.log('gotten response ', response);
       dispatch({

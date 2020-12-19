@@ -21,7 +21,7 @@ const styles = theme => ({
 class SongList2 extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { input: "" };
+    this.state = { input: "a" };
   }
 
   updateInput = input => {
@@ -29,7 +29,7 @@ class SongList2 extends React.Component {
   };
 
   componentDidMount() {
-    this.props.fetchSongs();
+    this.props.fetchSongs(this.state.input);
   }
 
   componentDidUpdate(prevProps) {
@@ -47,7 +47,10 @@ class SongList2 extends React.Component {
   }
 
   handleFilter = (value) => {
-    console.log('filter value', value);
+    const filterCharacter = value.toLowerCase();
+    console.log('filter value', filterCharacter);
+    this.setState({ input: filterCharacter });
+    this.props.fetchSongs(filterCharacter);
   }
 
   render() {

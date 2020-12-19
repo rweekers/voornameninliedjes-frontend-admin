@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const songService = {
     getAll,
+    getByFirstCharacter,
     getDone,
     getToDo,
     getSong,
@@ -24,6 +25,15 @@ function getAll() {
     };
 
     return fetch(`${apiUrl}/songs`, requestOptions).then(handleResponse);
+}
+
+function getByFirstCharacter(firstCharacter) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${apiUrl}/songs?first-character=${firstCharacter}`, requestOptions).then(handleResponse);
 }
 
 function getDone() {
