@@ -498,6 +498,7 @@ class SongDetail extends React.Component {
             const song = {
                 wikimediaPhotos: [],
                 flickrPhotos: [],
+                sources: [],
                 status: 'IN_PROGRESS',
                 artist: '', 
                 title: '', 
@@ -525,6 +526,8 @@ class SongDetail extends React.Component {
         const url = song.wikimediaPhotos.length > 0 ? song.wikimediaPhotos[0].url : '';
         const attribution = song.wikimediaPhotos.length > 0 ? song.wikimediaPhotos[0].attribution : '';
         const flickrId = song.flickrPhotos.length > 0 ? song.flickrPhotos[0] : '';
+
+        console.log(song);
 
         const songUrl = `https://voornameninliedjes.nl/song/${song.id}`
 
@@ -788,7 +791,7 @@ class SongDetail extends React.Component {
                                     aria-controls="sources-content"
                                     id="sources-header"
                                 >
-                                    <Typography className={classes.heading}>Bronnen</Typography>
+                                <Typography className={classes.heading}>Bronnen</Typography>
                                 </ExpansionPanelSummary>
                                 {song.sources.map((s, index) => (
                                     <ExpansionPanelDetails key={`source${index + 1}`}>
