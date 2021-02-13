@@ -163,7 +163,7 @@ class SongDetail extends React.Component {
         super(props);
 
         this.state = {
-            song: { artist: '', title: '', name: '', spotify: '', youtube: '', background: '', flickrPhotos: [], wikimediaPhotos: [], sources: [] },
+            song: { artist: '', title: '', name: '', spotify: '', wikipediaPage: '', youtube: '', background: '', flickrPhotos: [], wikimediaPhotos: [], sources: [] },
             user: {},
             photo: '',
             contribution: '',
@@ -197,6 +197,7 @@ class SongDetail extends React.Component {
         this.clearValidations();
 
         const value = event.target.value;
+
         this.setState({ song: { ...this.state.song, [name]: value } })
     }
 
@@ -523,7 +524,8 @@ class SongDetail extends React.Component {
                 artist: '', 
                 title: '', 
                 name: '', 
-                spotify: '', 
+                spotify: '',
+                wikipediaPage: '',
                 youtube: '', 
                 background: '', 
                 artistImage: ''
@@ -531,6 +533,7 @@ class SongDetail extends React.Component {
             this.setState({ song });
         } else {
             songService.getSong(songId).then(song => {
+                song.wikipediaPage = song.wikipediaPage ? song.wikipediaPage : '';
                 song.spotify = song.spotify ? song.spotify : '';
                 song.youtube = song.youtube ? song.youtube : '';
                 song.background = song.background ? song.background : '';
@@ -650,6 +653,29 @@ class SongDetail extends React.Component {
                                     <Typography variant="subtitle1" className={classes.toggleButtonText} gutterBottom>Te verwijderen</Typography>
                                 </ToggleButton>
                             </ToggleButtonGroup>
+                            <TextField
+                                id="wikipediaPage"
+                                label="Wikipedia Page"
+                                value={song.wikipediaPage}
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    className: classes.inputLabel
+                                }}
+                                InputProps={{
+                                    classes: {
+                                        input: classes.input,
+                                        underline: classes.underline,
+                                    }
+                                }}
+                                FormHelperTextProps={{
+                                    classes:{
+                                      error: classes.error
+                                    }
+                                  }}
+                                fullWidth={true}
+                                onChange={this.handleChange('wikipediaPage')}
+                                margin="normal"
+                            />
                             <TextField
                                 required={song.status === 'SHOW'}
                                 id="youtube"
